@@ -68,10 +68,11 @@ Copyright (c) 2022 Nova Dynamics
         * [.id](#module_AnomalyReports.AnomalyReport+id) ⇒ <code>string</code>
         * [.history](#module_AnomalyReports.AnomalyReport+history) ⇒ <code>array</code>
         * [.state](#module_AnomalyReports.AnomalyReport+state) ⇒ <code>string</code>
+        * [.iterations([state])](#module_AnomalyReports.AnomalyReport+iterations) ⇒ <code>number</code>
         * [.action(opts)](#module_AnomalyReports.AnomalyReport+action) ⇒ <code>AnomalyReport</code>
         * [.evaluate(opts)](#module_AnomalyReports.AnomalyReport+evaluate) ⇒ <code>AnomalyReport</code>
         * [.resolve(opts)](#module_AnomalyReports.AnomalyReport+resolve) ⇒ <code>AnomalyReport</code>
-        * [.force_review(reason, opts)](#module_AnomalyReports.AnomalyReport+force_review) ⇒ <code>AnomalyReport</code>
+        * [.pause(reason, opts)](#module_AnomalyReports.AnomalyReport+pause) ⇒ <code>AnomalyReport</code>
         * [.force_resolve(reason, opts)](#module_AnomalyReports.AnomalyReport+force_resolve) ⇒ <code>AnomalyReport</code>
         * [.save()](#module_AnomalyReports.AnomalyReport+save) ⇒ <code>AnomalyReport</code>
 
@@ -124,10 +125,11 @@ If you override _save(), it will be called after every state change.
     * [.id](#module_AnomalyReports.AnomalyReport+id) ⇒ <code>string</code>
     * [.history](#module_AnomalyReports.AnomalyReport+history) ⇒ <code>array</code>
     * [.state](#module_AnomalyReports.AnomalyReport+state) ⇒ <code>string</code>
+    * [.iterations([state])](#module_AnomalyReports.AnomalyReport+iterations) ⇒ <code>number</code>
     * [.action(opts)](#module_AnomalyReports.AnomalyReport+action) ⇒ <code>AnomalyReport</code>
     * [.evaluate(opts)](#module_AnomalyReports.AnomalyReport+evaluate) ⇒ <code>AnomalyReport</code>
     * [.resolve(opts)](#module_AnomalyReports.AnomalyReport+resolve) ⇒ <code>AnomalyReport</code>
-    * [.force_review(reason, opts)](#module_AnomalyReports.AnomalyReport+force_review) ⇒ <code>AnomalyReport</code>
+    * [.pause(reason, opts)](#module_AnomalyReports.AnomalyReport+pause) ⇒ <code>AnomalyReport</code>
     * [.force_resolve(reason, opts)](#module_AnomalyReports.AnomalyReport+force_resolve) ⇒ <code>AnomalyReport</code>
     * [.save()](#module_AnomalyReports.AnomalyReport+save) ⇒ <code>AnomalyReport</code>
 
@@ -178,6 +180,20 @@ state (getter)
 
 **Kind**: instance property of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
 **Returns**: <code>string</code> - the state of the anomaly report  
+<a name="module_AnomalyReports.AnomalyReport+iterations"></a>
+
+##### anomalyReport.iterations([state]) ⇒ <code>number</code>
+State iterations counter
+
+Show how many times we have transitioned to a given state
+
+**Kind**: instance method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
+**Returns**: <code>number</code> - the number of times we have transitioned to this state  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [state] | <code>string</code> | <code>&quot;\&quot;Actioning\&quot;&quot;</code> | the state to count |
+
 <a name="module_AnomalyReports.AnomalyReport+action"></a>
 
 ##### anomalyReport.action(opts) ⇒ <code>AnomalyReport</code>
@@ -223,19 +239,19 @@ Action the anomaly report
 | --- | --- | --- |
 | opts | <code>object</code> | options for this process |
 
-<a name="module_AnomalyReports.AnomalyReport+force_review"></a>
+<a name="module_AnomalyReports.AnomalyReport+pause"></a>
 
-##### anomalyReport.force\_review(reason, opts) ⇒ <code>AnomalyReport</code>
-force_review()
+##### anomalyReport.pause(reason, opts) ⇒ <code>AnomalyReport</code>
+pause()
 
-Force the anomaly report to ManualReview state
+Set the anomaly report to Paused state
 
 **Kind**: instance method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
 **Returns**: <code>AnomalyReport</code> - this anomaly report  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| reason | <code>string</code> | the reason for the manual review |
+| reason | <code>string</code> | the reason for the pause |
 | opts | <code>object</code> | options for this process |
 
 <a name="module_AnomalyReports.AnomalyReport+force_resolve"></a>
