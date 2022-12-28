@@ -1,12 +1,12 @@
-const ImpactReport  = require("./lib/ImpactReport");
-const IRErrors = require("./lib/IRErrors");
+const AnomalyReport  = require("./lib/AnomalyReport");
+const ARErrors = require("./lib/ARErrors");
 
 /**
- * @module ImpactReports
+ * @module AnomalyReports
  */
 
 module.exports = exports = {
-    ImpactReport : ImpactReport,
-    NominalIRError : IRErrors.NominalIRError,
-    FatalIRError : IRErrors.FatalIRError
+    AnomalyReport : AnomalyReport,
+    NominalARError : ARErrors.NominalARError,
+    FatalARError : ARErrors.FatalARError
 };
