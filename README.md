@@ -26,7 +26,7 @@ async service_next() {
 
 <!-- toc -->
 
-- [Anomaly Report (IR) Workflow](#anomaly-report-ir-workflow)
+- [Anomaly Report (AR) Workflow](#anomaly-report-ar-workflow)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 - [API](#api)
@@ -34,9 +34,11 @@ async service_next() {
 
 <!-- tocstop -->
 
-## Anomaly Report (IR) Workflow
+## Anomaly Report (AR) Workflow
 
-For each problem (anomaly) you would like to manage, create a class that derives from `AnomalyReport.js`.  Override `_action()`, `_evaluate()`, and `_resolve()`; when your IR is processed, each one of these methods will be called in turn.  Your overridden functions are `async` and expected to the `throw` if there is a problem.   If this happens, your associated `_recover_` method will then be called.  If this also `throws`, the IR will be re-queued (go to `Queued` state) for a `NominalARError` or go to `ManualReview` state for any other kind if error.
+![State Graph](img/graph.png "AR State Graph")
+
+For each problem (anomaly) you would like to manage, create a class that derives from `AnomalyReport.js`.  Override `_action()`, `_evaluate()`, and `_resolve()`; when your IR is processed, each one of these methods will be called in turn.  Your overridden functions are `async` and expected to the `throw` if there is a problem.   If this happens, your associated `_recover_` method will then be called.  If this also `throws`, the IR will be re-queued (go to `Queued` state) for a `NominalARError` or go to `Paused` state for any other kind if error.
 
 IRs have built in `.log.{debug|info|warn|error}()` methods, and it is recommended that you use this for logging since it allows the IR to keep a rich internal log of everything you are doing.  If your constructor was passed a logger with similarly named functions, that logger will also be automatically called when you call the built in logger. 
 
@@ -69,6 +71,7 @@ Copyright (c) 2022 Nova Dynamics
         * [.history](#module_AnomalyReports.AnomalyReport+history) ⇒ <code>array</code>
         * [.state](#module_AnomalyReports.AnomalyReport+state) ⇒ <code>string</code>
         * [.iterations([state])](#module_AnomalyReports.AnomalyReport+iterations) ⇒ <code>number</code>
+        * [.verify(opts)](#module_AnomalyReports.AnomalyReport+verify) ⇒ <code>AnomalyReport</code>
         * [.action(opts)](#module_AnomalyReports.AnomalyReport+action) ⇒ <code>AnomalyReport</code>
         * [.evaluate(opts)](#module_AnomalyReports.AnomalyReport+evaluate) ⇒ <code>AnomalyReport</code>
         * [.resolve(opts)](#module_AnomalyReports.AnomalyReport+resolve) ⇒ <code>AnomalyReport</code>
@@ -126,6 +129,7 @@ If you override _save(), it will be called after every state change.
     * [.history](#module_AnomalyReports.AnomalyReport+history) ⇒ <code>array</code>
     * [.state](#module_AnomalyReports.AnomalyReport+state) ⇒ <code>string</code>
     * [.iterations([state])](#module_AnomalyReports.AnomalyReport+iterations) ⇒ <code>number</code>
+    * [.verify(opts)](#module_AnomalyReports.AnomalyReport+verify) ⇒ <code>AnomalyReport</code>
     * [.action(opts)](#module_AnomalyReports.AnomalyReport+action) ⇒ <code>AnomalyReport</code>
     * [.evaluate(opts)](#module_AnomalyReports.AnomalyReport+evaluate) ⇒ <code>AnomalyReport</code>
     * [.resolve(opts)](#module_AnomalyReports.AnomalyReport+resolve) ⇒ <code>AnomalyReport</code>
@@ -193,6 +197,24 @@ Show how many times we have transitioned to a given state
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | [state] | <code>string</code> | <code>&quot;\&quot;Actioning\&quot;&quot;</code> | the state to count |
+
+<a name="module_AnomalyReports.AnomalyReport+verify"></a>
+
+##### anomalyReport.verify(opts) ⇒ <code>AnomalyReport</code>
+verify
+
+Verify the anomaly report prior to actioning
+
+Mostly useful in cases where things might have changed since the report was created
+Only does anything if you have included a _verify() method
+
+**Kind**: instance method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
+**Returns**: <code>AnomalyReport</code> - this if successful, otherwise null  
+**Emits**: [<code>state</code>](#AnomalyReport+event_state)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>object</code> | options for this process |
 
 <a name="module_AnomalyReports.AnomalyReport+action"></a>
 
