@@ -137,10 +137,11 @@ If you override _save(), it will be called after every state change.
 constructor
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| data | <code>object</code> | the data for this anomaly report |
-| logger | <code>object</code> | a logger to use |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| data | <code>object</code> |  | the data for this anomaly report |
+| [data.id] | <code>string</code> | <code>&quot;uuidv4()&quot;</code> | a unique id for this report |
+| logger | <code>object</code> |  | a logger to use |
 
 <a name="module_AnomalyReports.AnomalyReport+allowed_states"></a>
 
