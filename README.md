@@ -30,7 +30,7 @@ async service_next() {
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 - [API](#api)
-  * [ImpactReport](#impactreport)
+  * [ImpactReports](#impactreports)
 
 <!-- tocstop -->
 
@@ -52,30 +52,88 @@ Copyright (c) 2022 Nova Dynamics
 
 <!-- api -->
 
-<a name="ImpactReport"></a>
+<a name="module_ImpactReports"></a>
 
-### ImpactReport
-**Kind**: global class  
+### ImpactReports
 
-* [ImpactReport](#ImpactReport)
-    * [new ImpactReport(data, logger)](#new_ImpactReport_new)
-    * [.allowed_states](#ImpactReport+allowed_states) ⇒ <code>array</code>
-    * [.data](#ImpactReport+data) ⇒ <code>object</code>
-    * [.id](#ImpactReport+id) ⇒ <code>string</code>
-    * [.history](#ImpactReport+history) ⇒ <code>array</code>
-    * [.state](#ImpactReport+state) ⇒ <code>string</code>
-    * [.action(opts)](#ImpactReport+action) ⇒ [<code>ImpactReport</code>](#ImpactReport)
-    * [.evaluate(opts)](#ImpactReport+evaluate) ⇒ [<code>ImpactReport</code>](#ImpactReport)
-    * [.resolve(opts)](#ImpactReport+resolve) ⇒ [<code>ImpactReport</code>](#ImpactReport)
-    * [.force_review(reason, opts)](#ImpactReport+force_review) ⇒ [<code>ImpactReport</code>](#ImpactReport)
-    * [.force_resolve(reason, opts)](#ImpactReport+force_resolve) ⇒ [<code>ImpactReport</code>](#ImpactReport)
-    * [.save()](#ImpactReport+save) ⇒ [<code>ImpactReport</code>](#ImpactReport)
-    * ["error_log"](#ImpactReport+event_error_log)
-    * ["state"](#ImpactReport+event_state)
+* [ImpactReports](#module_ImpactReports)
+    * [.NominalIRError](#module_ImpactReports.NominalIRError)
+        * [new NominalIRError(message)](#new_module_ImpactReports.NominalIRError_new)
+    * [.FatalIRError](#module_ImpactReports.FatalIRError)
+        * [new FatalIRError(message)](#new_module_ImpactReports.FatalIRError_new)
+    * [.ImpactReport](#module_ImpactReports.ImpactReport)
+        * [new ImpactReport(data, logger)](#new_module_ImpactReports.ImpactReport_new)
+        * [.allowed_states](#module_ImpactReports.ImpactReport+allowed_states) ⇒ <code>array</code>
+        * [.data](#module_ImpactReports.ImpactReport+data) ⇒ <code>object</code>
+        * [.id](#module_ImpactReports.ImpactReport+id) ⇒ <code>string</code>
+        * [.history](#module_ImpactReports.ImpactReport+history) ⇒ <code>array</code>
+        * [.state](#module_ImpactReports.ImpactReport+state) ⇒ <code>string</code>
+        * [.action(opts)](#module_ImpactReports.ImpactReport+action) ⇒ <code>ImpactReport</code>
+        * [.evaluate(opts)](#module_ImpactReports.ImpactReport+evaluate) ⇒ <code>ImpactReport</code>
+        * [.resolve(opts)](#module_ImpactReports.ImpactReport+resolve) ⇒ <code>ImpactReport</code>
+        * [.force_review(reason, opts)](#module_ImpactReports.ImpactReport+force_review) ⇒ <code>ImpactReport</code>
+        * [.force_resolve(reason, opts)](#module_ImpactReports.ImpactReport+force_resolve) ⇒ <code>ImpactReport</code>
+        * [.save()](#module_ImpactReports.ImpactReport+save) ⇒ <code>ImpactReport</code>
 
-<a name="new_ImpactReport_new"></a>
+<a name="module_ImpactReports.NominalIRError"></a>
 
-#### new ImpactReport(data, logger)
+#### ImpactReports.NominalIRError
+NominalIRError
+
+Throw this to show that a nominal error has occurred.  The appropriate error handler will be called to see if Impact Report processing can continue.
+
+**Kind**: static class of [<code>ImpactReports</code>](#module_ImpactReports)  
+<a name="new_module_ImpactReports.NominalIRError_new"></a>
+
+##### new NominalIRError(message)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| message | <code>string</code> | the error message |
+
+<a name="module_ImpactReports.FatalIRError"></a>
+
+#### ImpactReports.FatalIRError
+FatalIRError
+
+Throw this to show that a fatal error has occurred.  Impact Report processing will stop and the report will be marked for manual review.
+
+**Kind**: static class of [<code>ImpactReports</code>](#module_ImpactReports)  
+<a name="new_module_ImpactReports.FatalIRError_new"></a>
+
+##### new FatalIRError(message)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| message | <code>string</code> | the error message |
+
+<a name="module_ImpactReports.ImpactReport"></a>
+
+#### ImpactReports.ImpactReport
+ImpactReport
+
+To use this class, extend it and override _action(), _evaluate(), _resolve() and optionally any _recover\_*() methods.
+If you override _save(), it will be called after every state change.
+
+**Kind**: static class of [<code>ImpactReports</code>](#module_ImpactReports)  
+
+* [.ImpactReport](#module_ImpactReports.ImpactReport)
+    * [new ImpactReport(data, logger)](#new_module_ImpactReports.ImpactReport_new)
+    * [.allowed_states](#module_ImpactReports.ImpactReport+allowed_states) ⇒ <code>array</code>
+    * [.data](#module_ImpactReports.ImpactReport+data) ⇒ <code>object</code>
+    * [.id](#module_ImpactReports.ImpactReport+id) ⇒ <code>string</code>
+    * [.history](#module_ImpactReports.ImpactReport+history) ⇒ <code>array</code>
+    * [.state](#module_ImpactReports.ImpactReport+state) ⇒ <code>string</code>
+    * [.action(opts)](#module_ImpactReports.ImpactReport+action) ⇒ <code>ImpactReport</code>
+    * [.evaluate(opts)](#module_ImpactReports.ImpactReport+evaluate) ⇒ <code>ImpactReport</code>
+    * [.resolve(opts)](#module_ImpactReports.ImpactReport+resolve) ⇒ <code>ImpactReport</code>
+    * [.force_review(reason, opts)](#module_ImpactReports.ImpactReport+force_review) ⇒ <code>ImpactReport</code>
+    * [.force_resolve(reason, opts)](#module_ImpactReports.ImpactReport+force_resolve) ⇒ <code>ImpactReport</code>
+    * [.save()](#module_ImpactReports.ImpactReport+save) ⇒ <code>ImpactReport</code>
+
+<a name="new_module_ImpactReports.ImpactReport_new"></a>
+
+##### new ImpactReport(data, logger)
 constructor
 
 
@@ -84,143 +142,122 @@ constructor
 | data | <code>object</code> | the data for this impact report |
 | logger | <code>object</code> | a logger to use |
 
-<a name="ImpactReport+allowed_states"></a>
+<a name="module_ImpactReports.ImpactReport+allowed_states"></a>
 
-#### impactReport.allowed\_states ⇒ <code>array</code>
+##### impactReport.allowed\_states ⇒ <code>array</code>
 allowed_states (getter)
 
-**Kind**: instance property of [<code>ImpactReport</code>](#ImpactReport)  
+**Kind**: instance property of [<code>ImpactReport</code>](#module_ImpactReports.ImpactReport)  
 **Returns**: <code>array</code> - the allowed states  
-<a name="ImpactReport+data"></a>
+<a name="module_ImpactReports.ImpactReport+data"></a>
 
-#### impactReport.data ⇒ <code>object</code>
+##### impactReport.data ⇒ <code>object</code>
 data (getter)
 
-**Kind**: instance property of [<code>ImpactReport</code>](#ImpactReport)  
+**Kind**: instance property of [<code>ImpactReport</code>](#module_ImpactReports.ImpactReport)  
 **Returns**: <code>object</code> - the data for this impact report  
-<a name="ImpactReport+id"></a>
+<a name="module_ImpactReports.ImpactReport+id"></a>
 
-#### impactReport.id ⇒ <code>string</code>
+##### impactReport.id ⇒ <code>string</code>
 id (getter)
 
-**Kind**: instance property of [<code>ImpactReport</code>](#ImpactReport)  
+**Kind**: instance property of [<code>ImpactReport</code>](#module_ImpactReports.ImpactReport)  
 **Returns**: <code>string</code> - the id for this impact report  
-<a name="ImpactReport+history"></a>
+<a name="module_ImpactReports.ImpactReport+history"></a>
 
-#### impactReport.history ⇒ <code>array</code>
+##### impactReport.history ⇒ <code>array</code>
 Log (getter)
 
-**Kind**: instance property of [<code>ImpactReport</code>](#ImpactReport)  
+**Kind**: instance property of [<code>ImpactReport</code>](#module_ImpactReports.ImpactReport)  
 **Returns**: <code>array</code> - the log for this impact report  
-<a name="ImpactReport+state"></a>
+<a name="module_ImpactReports.ImpactReport+state"></a>
 
-#### impactReport.state ⇒ <code>string</code>
+##### impactReport.state ⇒ <code>string</code>
 state (getter)
 
-**Kind**: instance property of [<code>ImpactReport</code>](#ImpactReport)  
+**Kind**: instance property of [<code>ImpactReport</code>](#module_ImpactReports.ImpactReport)  
 **Returns**: <code>string</code> - the state of the impact report  
-<a name="ImpactReport+action"></a>
+<a name="module_ImpactReports.ImpactReport+action"></a>
 
-#### impactReport.action(opts) ⇒ [<code>ImpactReport</code>](#ImpactReport)
+##### impactReport.action(opts) ⇒ <code>ImpactReport</code>
 action
 
 Action the impact report
 
-**Kind**: instance method of [<code>ImpactReport</code>](#ImpactReport)  
-**Returns**: [<code>ImpactReport</code>](#ImpactReport) - this if successful, otherwise null  
-**Emits**: [<code>state</code>](#ImpactReport+event_state)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>object</code> | optoons for this process |
-
-<a name="ImpactReport+evaluate"></a>
-
-#### impactReport.evaluate(opts) ⇒ [<code>ImpactReport</code>](#ImpactReport)
-evaluate
-
-Action the impact report
-
-**Kind**: instance method of [<code>ImpactReport</code>](#ImpactReport)  
-**Returns**: [<code>ImpactReport</code>](#ImpactReport) - this if successful, otherwise null  
-**Emits**: [<code>state</code>](#ImpactReport+event_state)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>object</code> | optoons for this process |
-
-<a name="ImpactReport+resolve"></a>
-
-#### impactReport.resolve(opts) ⇒ [<code>ImpactReport</code>](#ImpactReport)
-resolve
-
-Action the impact report
-
-**Kind**: instance method of [<code>ImpactReport</code>](#ImpactReport)  
-**Returns**: [<code>ImpactReport</code>](#ImpactReport) - this if successful, otherwise null  
+**Kind**: instance method of [<code>ImpactReport</code>](#module_ImpactReports.ImpactReport)  
+**Returns**: <code>ImpactReport</code> - this if successful, otherwise null  
 **Emits**: [<code>state</code>](#ImpactReport+event_state)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | opts | <code>object</code> | options for this process |
 
-<a name="ImpactReport+force_review"></a>
+<a name="module_ImpactReports.ImpactReport+evaluate"></a>
 
-#### impactReport.force\_review(reason, opts) ⇒ [<code>ImpactReport</code>](#ImpactReport)
+##### impactReport.evaluate(opts) ⇒ <code>ImpactReport</code>
+evaluate
+
+Action the impact report
+
+**Kind**: instance method of [<code>ImpactReport</code>](#module_ImpactReports.ImpactReport)  
+**Returns**: <code>ImpactReport</code> - this if successful, otherwise null  
+**Emits**: [<code>state</code>](#ImpactReport+event_state)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>object</code> | options for this process |
+
+<a name="module_ImpactReports.ImpactReport+resolve"></a>
+
+##### impactReport.resolve(opts) ⇒ <code>ImpactReport</code>
+resolve
+
+Action the impact report
+
+**Kind**: instance method of [<code>ImpactReport</code>](#module_ImpactReports.ImpactReport)  
+**Returns**: <code>ImpactReport</code> - this if successful, otherwise null  
+**Emits**: [<code>state</code>](#ImpactReport+event_state)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opts | <code>object</code> | options for this process |
+
+<a name="module_ImpactReports.ImpactReport+force_review"></a>
+
+##### impactReport.force\_review(reason, opts) ⇒ <code>ImpactReport</code>
 force_review()
 
 Force the impact report to ManualReview state
 
-**Kind**: instance method of [<code>ImpactReport</code>](#ImpactReport)  
-**Returns**: [<code>ImpactReport</code>](#ImpactReport) - this impact report  
+**Kind**: instance method of [<code>ImpactReport</code>](#module_ImpactReports.ImpactReport)  
+**Returns**: <code>ImpactReport</code> - this impact report  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | reason | <code>string</code> | the reason for the manual review |
 | opts | <code>object</code> | options for this process |
 
-<a name="ImpactReport+force_resolve"></a>
+<a name="module_ImpactReports.ImpactReport+force_resolve"></a>
 
-#### impactReport.force\_resolve(reason, opts) ⇒ [<code>ImpactReport</code>](#ImpactReport)
+##### impactReport.force\_resolve(reason, opts) ⇒ <code>ImpactReport</code>
 force_resolve()
 
 Force the impact report to Resolved state
 
-**Kind**: instance method of [<code>ImpactReport</code>](#ImpactReport)  
-**Returns**: [<code>ImpactReport</code>](#ImpactReport) - this impact report  
+**Kind**: instance method of [<code>ImpactReport</code>](#module_ImpactReports.ImpactReport)  
+**Returns**: <code>ImpactReport</code> - this impact report  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | reason | <code>string</code> | the reason for the force resolve |
 | opts | <code>object</code> | options for this process |
 
-<a name="ImpactReport+save"></a>
+<a name="module_ImpactReports.ImpactReport+save"></a>
 
-#### impactReport.save() ⇒ [<code>ImpactReport</code>](#ImpactReport)
+##### impactReport.save() ⇒ <code>ImpactReport</code>
 Save
 
-**Kind**: instance method of [<code>ImpactReport</code>](#ImpactReport)  
-**Returns**: [<code>ImpactReport</code>](#ImpactReport) - this  
-<a name="ImpactReport+event_error_log"></a>
-
-#### "error_log"
-**Kind**: event emitted by [<code>ImpactReport</code>](#ImpactReport)  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| payload | <code>object</code> | the associated payload |
-
-<a name="ImpactReport+event_state"></a>
-
-#### "state"
-**Kind**: event emitted by [<code>ImpactReport</code>](#ImpactReport)  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| new_state | <code>string</code> | the new state |
-| old_state | <code>string</code> | the old state |
-
+**Kind**: instance method of [<code>ImpactReport</code>](#module_ImpactReports.ImpactReport)  
+**Returns**: <code>ImpactReport</code> - this  
 
 <!-- apistop -->
