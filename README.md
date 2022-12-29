@@ -27,6 +27,7 @@ async service_next() {
 <!-- toc -->
 
 - [Anomaly Report (AR) Workflow](#anomaly-report-ar-workflow)
+- [Todo](#todo)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 - [API](#api)
@@ -41,6 +42,13 @@ async service_next() {
 For each problem (anomaly) you would like to manage, create a class that derives from `AnomalyReport.js`.  Override `_action()`, `_evaluate()`, and `_resolve()`; when your IR is processed, each one of these methods will be called in turn.  Your overridden functions are `async` and expected to the `throw` if there is a problem.   If this happens, your associated `_recover_` method will then be called.  If this also `throws`, the IR will be re-queued (go to `Queued` state) for a `NominalARError` or go to `Paused` state for any other kind if error.
 
 IRs have built in `.log.{debug|info|warn|error}()` methods, and it is recommended that you use this for logging since it allows the IR to keep a rich internal log of everything you are doing.  If your constructor was passed a logger with similarly named functions, that logger will also be automatically called when you call the built in logger. 
+
+## Todo
+
+- Better document the override methods
+- Remove unnecessary recovery methods and save() calls
+- Add test for detect()
+- Build queue class
 
 ## Acknowledgements
 
@@ -65,19 +73,23 @@ Copyright (c) 2022 Nova Dynamics
         * [new FatalARError(message)](#new_module_AnomalyReports.FatalARError_new)
     * [.AnomalyReport](#module_AnomalyReports.AnomalyReport)
         * [new AnomalyReport(data, logger)](#new_module_AnomalyReports.AnomalyReport_new)
-        * [.allowed_states](#module_AnomalyReports.AnomalyReport+allowed_states) ⇒ <code>array</code>
-        * [.data](#module_AnomalyReports.AnomalyReport+data) ⇒ <code>object</code>
-        * [.id](#module_AnomalyReports.AnomalyReport+id) ⇒ <code>string</code>
-        * [.history](#module_AnomalyReports.AnomalyReport+history) ⇒ <code>array</code>
-        * [.state](#module_AnomalyReports.AnomalyReport+state) ⇒ <code>string</code>
-        * [.iterations([state])](#module_AnomalyReports.AnomalyReport+iterations) ⇒ <code>number</code>
-        * [.verify(opts)](#module_AnomalyReports.AnomalyReport+verify) ⇒ <code>AnomalyReport</code>
-        * [.action(opts)](#module_AnomalyReports.AnomalyReport+action) ⇒ <code>AnomalyReport</code>
-        * [.evaluate(opts)](#module_AnomalyReports.AnomalyReport+evaluate) ⇒ <code>AnomalyReport</code>
-        * [.resolve(opts)](#module_AnomalyReports.AnomalyReport+resolve) ⇒ <code>AnomalyReport</code>
-        * [.pause(reason, opts)](#module_AnomalyReports.AnomalyReport+pause) ⇒ <code>AnomalyReport</code>
-        * [.force_resolve(reason, opts)](#module_AnomalyReports.AnomalyReport+force_resolve) ⇒ <code>AnomalyReport</code>
-        * [.save()](#module_AnomalyReports.AnomalyReport+save) ⇒ <code>AnomalyReport</code>
+        * _instance_
+            * [.allowed_states](#module_AnomalyReports.AnomalyReport+allowed_states) ⇒ <code>array</code>
+            * [.data](#module_AnomalyReports.AnomalyReport+data) ⇒ <code>object</code>
+            * [.id](#module_AnomalyReports.AnomalyReport+id) ⇒ <code>string</code>
+            * [.history](#module_AnomalyReports.AnomalyReport+history) ⇒ <code>array</code>
+            * [.state](#module_AnomalyReports.AnomalyReport+state) ⇒ <code>string</code>
+            * [.iterations([state])](#module_AnomalyReports.AnomalyReport+iterations) ⇒ <code>number</code>
+            * [.verify(opts)](#module_AnomalyReports.AnomalyReport+verify) ⇒ <code>AnomalyReport</code>
+            * [.action(opts)](#module_AnomalyReports.AnomalyReport+action) ⇒ <code>AnomalyReport</code>
+            * [.evaluate(opts)](#module_AnomalyReports.AnomalyReport+evaluate) ⇒ <code>AnomalyReport</code>
+            * [.resolve(opts)](#module_AnomalyReports.AnomalyReport+resolve) ⇒ <code>AnomalyReport</code>
+            * [.pause(reason, opts)](#module_AnomalyReports.AnomalyReport+pause) ⇒ <code>AnomalyReport</code>
+            * [.force_resolve(reason, opts)](#module_AnomalyReports.AnomalyReport+force_resolve) ⇒ <code>AnomalyReport</code>
+            * [.save()](#module_AnomalyReports.AnomalyReport+save) ⇒ <code>AnomalyReport</code>
+        * _static_
+            * [._detect(data, opts)](#module_AnomalyReports.AnomalyReport._detect) ⇒ <code>boolean</code>
+            * [.detect(data, opts, logger)](#module_AnomalyReports.AnomalyReport.detect) ⇒ <code>AnomalyReport</code>
 
 <a name="module_AnomalyReports.NominalARError"></a>
 
@@ -123,19 +135,23 @@ If you override _save(), it will be called after every state change.
 
 * [.AnomalyReport](#module_AnomalyReports.AnomalyReport)
     * [new AnomalyReport(data, logger)](#new_module_AnomalyReports.AnomalyReport_new)
-    * [.allowed_states](#module_AnomalyReports.AnomalyReport+allowed_states) ⇒ <code>array</code>
-    * [.data](#module_AnomalyReports.AnomalyReport+data) ⇒ <code>object</code>
-    * [.id](#module_AnomalyReports.AnomalyReport+id) ⇒ <code>string</code>
-    * [.history](#module_AnomalyReports.AnomalyReport+history) ⇒ <code>array</code>
-    * [.state](#module_AnomalyReports.AnomalyReport+state) ⇒ <code>string</code>
-    * [.iterations([state])](#module_AnomalyReports.AnomalyReport+iterations) ⇒ <code>number</code>
-    * [.verify(opts)](#module_AnomalyReports.AnomalyReport+verify) ⇒ <code>AnomalyReport</code>
-    * [.action(opts)](#module_AnomalyReports.AnomalyReport+action) ⇒ <code>AnomalyReport</code>
-    * [.evaluate(opts)](#module_AnomalyReports.AnomalyReport+evaluate) ⇒ <code>AnomalyReport</code>
-    * [.resolve(opts)](#module_AnomalyReports.AnomalyReport+resolve) ⇒ <code>AnomalyReport</code>
-    * [.pause(reason, opts)](#module_AnomalyReports.AnomalyReport+pause) ⇒ <code>AnomalyReport</code>
-    * [.force_resolve(reason, opts)](#module_AnomalyReports.AnomalyReport+force_resolve) ⇒ <code>AnomalyReport</code>
-    * [.save()](#module_AnomalyReports.AnomalyReport+save) ⇒ <code>AnomalyReport</code>
+    * _instance_
+        * [.allowed_states](#module_AnomalyReports.AnomalyReport+allowed_states) ⇒ <code>array</code>
+        * [.data](#module_AnomalyReports.AnomalyReport+data) ⇒ <code>object</code>
+        * [.id](#module_AnomalyReports.AnomalyReport+id) ⇒ <code>string</code>
+        * [.history](#module_AnomalyReports.AnomalyReport+history) ⇒ <code>array</code>
+        * [.state](#module_AnomalyReports.AnomalyReport+state) ⇒ <code>string</code>
+        * [.iterations([state])](#module_AnomalyReports.AnomalyReport+iterations) ⇒ <code>number</code>
+        * [.verify(opts)](#module_AnomalyReports.AnomalyReport+verify) ⇒ <code>AnomalyReport</code>
+        * [.action(opts)](#module_AnomalyReports.AnomalyReport+action) ⇒ <code>AnomalyReport</code>
+        * [.evaluate(opts)](#module_AnomalyReports.AnomalyReport+evaluate) ⇒ <code>AnomalyReport</code>
+        * [.resolve(opts)](#module_AnomalyReports.AnomalyReport+resolve) ⇒ <code>AnomalyReport</code>
+        * [.pause(reason, opts)](#module_AnomalyReports.AnomalyReport+pause) ⇒ <code>AnomalyReport</code>
+        * [.force_resolve(reason, opts)](#module_AnomalyReports.AnomalyReport+force_resolve) ⇒ <code>AnomalyReport</code>
+        * [.save()](#module_AnomalyReports.AnomalyReport+save) ⇒ <code>AnomalyReport</code>
+    * _static_
+        * [._detect(data, opts)](#module_AnomalyReports.AnomalyReport._detect) ⇒ <code>boolean</code>
+        * [.detect(data, opts, logger)](#module_AnomalyReports.AnomalyReport.detect) ⇒ <code>AnomalyReport</code>
 
 <a name="new_module_AnomalyReports.AnomalyReport_new"></a>
 
@@ -298,5 +314,39 @@ Save
 
 **Kind**: instance method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
 **Returns**: <code>AnomalyReport</code> - this  
+<a name="module_AnomalyReports.AnomalyReport._detect"></a>
+
+##### AnomalyReport.\_detect(data, opts) ⇒ <code>boolean</code>
+Detect
+
+Detect an anomaly
+Override me!
+
+**Kind**: static method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
+**Returns**: <code>boolean</code> - true if the anomaly is detected, false otherwise  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| data | <code>object</code> |  | the data for this anomaly report (probably the system being analysed) |
+| [data.id] | <code>string</code> | <code>&quot;uuidv4()&quot;</code> | a unique id for this report |
+| opts | <code>object</code> |  | arbitrary options |
+
+<a name="module_AnomalyReports.AnomalyReport.detect"></a>
+
+##### AnomalyReport.detect(data, opts, logger) ⇒ <code>AnomalyReport</code>
+Detect
+
+Detect an anomaly
+
+**Kind**: static method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
+**Returns**: <code>AnomalyReport</code> - an anomaly report if detected, null otherwise  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| data | <code>object</code> |  | the data for this anomaly report (probably the system being analysed) |
+| [data.id] | <code>string</code> | <code>&quot;uuidv4()&quot;</code> | a unique id for this report |
+| opts | <code>object</code> |  | arbitrary options |
+| logger | <code>object</code> |  | a logger to use if an anomaly report is created |
+
 
 <!-- apistop -->
