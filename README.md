@@ -21,12 +21,12 @@ processor.reports.push(new AR.report());
 
 <!-- toc -->
 
-- [Anomaly Report (AR) Workflow](#anomaly-report-ar-workflow)
+- [Anomaly Workflow](#anomaly-workflow)
 - [Todo](#todo)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 - [API](#api)
-  * [AnomalyReports](#anomalyreports)
+  * [Anomalies](#anomalies)
 
 <!-- tocstop -->
 
@@ -80,291 +80,234 @@ Copyright (c) 2022 Nova Dynamics
 
 <!-- api -->
 
-<a name="module_AnomalyReports"></a>
+<a name="module_Anomalies"></a>
 
-### AnomalyReports
+### Anomalies
 
-* [AnomalyReports](#module_AnomalyReports)
-    * [.NominalARError](#module_AnomalyReports.NominalARError)
-        * [new NominalARError(message)](#new_module_AnomalyReports.NominalARError_new)
-    * [.FatalARError](#module_AnomalyReports.FatalARError)
-        * [new FatalARError(message)](#new_module_AnomalyReports.FatalARError_new)
-    * [.AnomalyReport](#module_AnomalyReports.AnomalyReport)
-        * [new AnomalyReport(data, logger)](#new_module_AnomalyReports.AnomalyReport_new)
+* [Anomalies](#module_Anomalies)
+    * [.Anomaly](#module_Anomalies.Anomaly)
+        * [new Anomaly()](#new_module_Anomalies.Anomaly_new)
         * _instance_
-            * [.allowed_states](#module_AnomalyReports.AnomalyReport+allowed_states) ⇒ <code>array</code>
-            * [.data](#module_AnomalyReports.AnomalyReport+data) ⇒ <code>object</code>
-            * [.id](#module_AnomalyReports.AnomalyReport+id) ⇒ <code>string</code>
-            * [.history](#module_AnomalyReports.AnomalyReport+history) ⇒ <code>array</code>
-            * [.state](#module_AnomalyReports.AnomalyReport+state) ⇒ <code>string</code>
-            * [.iterations([state])](#module_AnomalyReports.AnomalyReport+iterations) ⇒ <code>number</code>
-            * [.verify(opts)](#module_AnomalyReports.AnomalyReport+verify) ⇒ <code>AnomalyReport</code>
-            * [.action(opts)](#module_AnomalyReports.AnomalyReport+action) ⇒ <code>AnomalyReport</code>
-            * [.evaluate(opts)](#module_AnomalyReports.AnomalyReport+evaluate) ⇒ <code>AnomalyReport</code>
-            * [.resolve(opts)](#module_AnomalyReports.AnomalyReport+resolve) ⇒ <code>AnomalyReport</code>
-            * [.pause(reason, opts)](#module_AnomalyReports.AnomalyReport+pause) ⇒ <code>AnomalyReport</code>
-            * [.force_resolve(reason, opts)](#module_AnomalyReports.AnomalyReport+force_resolve) ⇒ <code>AnomalyReport</code>
-            * [.save()](#module_AnomalyReports.AnomalyReport+save) ⇒ <code>AnomalyReport</code>
+            * [.name](#module_Anomalies.Anomaly+name) ⇒ <code>string</code>
+            * [.paused](#module_Anomalies.Anomaly+paused) ⇒ <code>boolean</code>
+            * [.id](#module_Anomalies.Anomaly+id) ⇒ <code>string</code>
+            * [.history](#module_Anomalies.Anomaly+history) ⇒ <code>array</code>
+            * [.state](#module_Anomalies.Anomaly+state) ⇒ <code>string</code>
+            * [.iterations([state])](#module_Anomalies.Anomaly+iterations) ⇒ <code>number</code>
+            * [.pause(reason)](#module_Anomalies.Anomaly+pause)
+            * [.resume(reason)](#module_Anomalies.Anomaly+resume)
         * _static_
-            * [._detect(data, opts)](#module_AnomalyReports.AnomalyReport._detect) ⇒ <code>boolean</code>
-            * [.detect(data, opts, logger)](#module_AnomalyReports.AnomalyReport.detect) ⇒ <code>AnomalyReport</code>
+            * [.allowed_states](#module_Anomalies.Anomaly.allowed_states) ⇒ <code>array</code>
+            * [.detect(system, opts)](#module_Anomalies.Anomaly.detect) ⇒ <code>boolean</code>
+    * [.Processor](#module_Anomalies.Processor)
+        * [.anomalies](#module_Anomalies.Processor+anomalies) ⇒ <code>Array.&lt;Anomaly&gt;</code>
+        * [.classes](#module_Anomalies.Processor+classes) ⇒ <code>Array.&lt;Anomaly&gt;</code>
+        * [.anomalies_with_state(state)](#module_Anomalies.Processor+anomalies_with_state) ⇒ <code>Array.&lt;Anomaly&gt;</code>
+        * [.detect(system, opts)](#module_Anomalies.Processor+detect)
+        * [.process()](#module_Anomalies.Processor+process) ⇒ <code>Promise.&lt;(Anomaly\|null)&gt;</code>
 
-<a name="module_AnomalyReports.NominalARError"></a>
+<a name="module_Anomalies.Anomaly"></a>
 
-#### AnomalyReports.NominalARError
-NominalARError
-
-Throw this to show that a nominal error has occurred.  The appropriate error handler will be called to see if Anomaly Report processing can continue.
-
-**Kind**: static class of [<code>AnomalyReports</code>](#module_AnomalyReports)  
-<a name="new_module_AnomalyReports.NominalARError_new"></a>
-
-##### new NominalARError(message)
-
-| Param | Type | Description |
-| --- | --- | --- |
-| message | <code>string</code> | the error message |
-
-<a name="module_AnomalyReports.FatalARError"></a>
-
-#### AnomalyReports.FatalARError
-FatalARError
-
-Throw this to show that a fatal error has occurred.  Anomaly Report processing will stop and the report will be marked for manual review.
-
-**Kind**: static class of [<code>AnomalyReports</code>](#module_AnomalyReports)  
-<a name="new_module_AnomalyReports.FatalARError_new"></a>
-
-##### new FatalARError(message)
-
-| Param | Type | Description |
-| --- | --- | --- |
-| message | <code>string</code> | the error message |
-
-<a name="module_AnomalyReports.AnomalyReport"></a>
-
-#### AnomalyReports.AnomalyReport
-AnomalyReport
+#### Anomalies.Anomaly
+Anomaly
 
 To use this class, extend it and override _action(), _evaluate(), _resolve() and optionally any _recover\_*() methods.
 If you override _save(), it will be called after every state change.
 
-**Kind**: static class of [<code>AnomalyReports</code>](#module_AnomalyReports)  
+**Kind**: static class of [<code>Anomalies</code>](#module_Anomalies)  
 
-* [.AnomalyReport](#module_AnomalyReports.AnomalyReport)
-    * [new AnomalyReport(data, logger)](#new_module_AnomalyReports.AnomalyReport_new)
+* [.Anomaly](#module_Anomalies.Anomaly)
+    * [new Anomaly()](#new_module_Anomalies.Anomaly_new)
     * _instance_
-        * [.allowed_states](#module_AnomalyReports.AnomalyReport+allowed_states) ⇒ <code>array</code>
-        * [.data](#module_AnomalyReports.AnomalyReport+data) ⇒ <code>object</code>
-        * [.id](#module_AnomalyReports.AnomalyReport+id) ⇒ <code>string</code>
-        * [.history](#module_AnomalyReports.AnomalyReport+history) ⇒ <code>array</code>
-        * [.state](#module_AnomalyReports.AnomalyReport+state) ⇒ <code>string</code>
-        * [.iterations([state])](#module_AnomalyReports.AnomalyReport+iterations) ⇒ <code>number</code>
-        * [.verify(opts)](#module_AnomalyReports.AnomalyReport+verify) ⇒ <code>AnomalyReport</code>
-        * [.action(opts)](#module_AnomalyReports.AnomalyReport+action) ⇒ <code>AnomalyReport</code>
-        * [.evaluate(opts)](#module_AnomalyReports.AnomalyReport+evaluate) ⇒ <code>AnomalyReport</code>
-        * [.resolve(opts)](#module_AnomalyReports.AnomalyReport+resolve) ⇒ <code>AnomalyReport</code>
-        * [.pause(reason, opts)](#module_AnomalyReports.AnomalyReport+pause) ⇒ <code>AnomalyReport</code>
-        * [.force_resolve(reason, opts)](#module_AnomalyReports.AnomalyReport+force_resolve) ⇒ <code>AnomalyReport</code>
-        * [.save()](#module_AnomalyReports.AnomalyReport+save) ⇒ <code>AnomalyReport</code>
+        * [.name](#module_Anomalies.Anomaly+name) ⇒ <code>string</code>
+        * [.paused](#module_Anomalies.Anomaly+paused) ⇒ <code>boolean</code>
+        * [.id](#module_Anomalies.Anomaly+id) ⇒ <code>string</code>
+        * [.history](#module_Anomalies.Anomaly+history) ⇒ <code>array</code>
+        * [.state](#module_Anomalies.Anomaly+state) ⇒ <code>string</code>
+        * [.iterations([state])](#module_Anomalies.Anomaly+iterations) ⇒ <code>number</code>
+        * [.pause(reason)](#module_Anomalies.Anomaly+pause)
+        * [.resume(reason)](#module_Anomalies.Anomaly+resume)
     * _static_
-        * [._detect(data, opts)](#module_AnomalyReports.AnomalyReport._detect) ⇒ <code>boolean</code>
-        * [.detect(data, opts, logger)](#module_AnomalyReports.AnomalyReport.detect) ⇒ <code>AnomalyReport</code>
+        * [.allowed_states](#module_Anomalies.Anomaly.allowed_states) ⇒ <code>array</code>
+        * [.detect(system, opts)](#module_Anomalies.Anomaly.detect) ⇒ <code>boolean</code>
 
-<a name="new_module_AnomalyReports.AnomalyReport_new"></a>
+<a name="new_module_Anomalies.Anomaly_new"></a>
 
-##### new AnomalyReport(data, logger)
+##### new Anomaly()
 constructor
 
+<a name="module_Anomalies.Anomaly+name"></a>
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| data | <code>object</code> |  | the data for this anomaly report |
-| [data.id] | <code>string</code> | <code>&quot;uuidv4()&quot;</code> | a unique id for this report |
-| logger | <code>object</code> |  | a logger to use |
+##### anomaly.name ⇒ <code>string</code>
+name (getter)
 
-<a name="module_AnomalyReports.AnomalyReport+allowed_states"></a>
+**Kind**: instance property of [<code>Anomaly</code>](#module_Anomalies.Anomaly)  
+**Returns**: <code>string</code> - the name of this anomaly  
+<a name="module_Anomalies.Anomaly+paused"></a>
 
-##### anomalyReport.allowed\_states ⇒ <code>array</code>
-allowed_states (getter)
+##### anomaly.paused ⇒ <code>boolean</code>
+paused (getter)
 
-**Kind**: instance property of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>array</code> - the allowed states  
-<a name="module_AnomalyReports.AnomalyReport+data"></a>
+**Kind**: instance property of [<code>Anomaly</code>](#module_Anomalies.Anomaly)  
+**Returns**: <code>boolean</code> - true if this is paused  
+<a name="module_Anomalies.Anomaly+id"></a>
 
-##### anomalyReport.data ⇒ <code>object</code>
-data (getter)
-
-**Kind**: instance property of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>object</code> - the data for this anomaly report  
-<a name="module_AnomalyReports.AnomalyReport+id"></a>
-
-##### anomalyReport.id ⇒ <code>string</code>
+##### anomaly.id ⇒ <code>string</code>
 id (getter)
 
-**Kind**: instance property of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>string</code> - the id for this anomaly report  
-<a name="module_AnomalyReports.AnomalyReport+history"></a>
+**Kind**: instance property of [<code>Anomaly</code>](#module_Anomalies.Anomaly)  
+**Returns**: <code>string</code> - the id for this anomaly  
+<a name="module_Anomalies.Anomaly+history"></a>
 
-##### anomalyReport.history ⇒ <code>array</code>
+##### anomaly.history ⇒ <code>array</code>
 Log (getter)
 
-**Kind**: instance property of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>array</code> - the log for this anomaly report  
-<a name="module_AnomalyReports.AnomalyReport+state"></a>
+**Kind**: instance property of [<code>Anomaly</code>](#module_Anomalies.Anomaly)  
+**Returns**: <code>array</code> - the log for this anomaly  
+<a name="module_Anomalies.Anomaly+state"></a>
 
-##### anomalyReport.state ⇒ <code>string</code>
+##### anomaly.state ⇒ <code>string</code>
 state (getter)
 
-**Kind**: instance property of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>string</code> - the state of the anomaly report  
-<a name="module_AnomalyReports.AnomalyReport+iterations"></a>
+**Kind**: instance property of [<code>Anomaly</code>](#module_Anomalies.Anomaly)  
+**Returns**: <code>string</code> - the state of the anomaly  
+<a name="module_Anomalies.Anomaly+iterations"></a>
 
-##### anomalyReport.iterations([state]) ⇒ <code>number</code>
+##### anomaly.iterations([state]) ⇒ <code>number</code>
 State iterations counter
 
 Show how many times we have transitioned to a given state
 
-**Kind**: instance method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
+**Kind**: instance method of [<code>Anomaly</code>](#module_Anomalies.Anomaly)  
 **Returns**: <code>number</code> - the number of times we have transitioned to this state  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | [state] | <code>string</code> | <code>&quot;\&quot;Actioning\&quot;&quot;</code> | the state to count |
 
-<a name="module_AnomalyReports.AnomalyReport+verify"></a>
+<a name="module_Anomalies.Anomaly+pause"></a>
 
-##### anomalyReport.verify(opts) ⇒ <code>AnomalyReport</code>
-verify
+##### anomaly.pause(reason)
+pause
 
-Verify the anomaly report prior to actioning
+Pause this anomaly
 
-Mostly useful in cases where things might have changed since the report was created
-Only does anything if you have included a _verify() method
-
-**Kind**: instance method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>AnomalyReport</code> - this if successful, otherwise null  
-**Emits**: [<code>state</code>](#AnomalyReport+event_state)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>object</code> | options for this process |
-
-<a name="module_AnomalyReports.AnomalyReport+action"></a>
-
-##### anomalyReport.action(opts) ⇒ <code>AnomalyReport</code>
-action
-
-Action the anomaly report
-
-**Kind**: instance method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>AnomalyReport</code> - this if successful, otherwise null  
-**Emits**: [<code>state</code>](#AnomalyReport+event_state)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>object</code> | options for this process |
-
-<a name="module_AnomalyReports.AnomalyReport+evaluate"></a>
-
-##### anomalyReport.evaluate(opts) ⇒ <code>AnomalyReport</code>
-evaluate
-
-Action the anomaly report
-
-**Kind**: instance method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>AnomalyReport</code> - this if successful, otherwise null  
-**Emits**: [<code>state</code>](#AnomalyReport+event_state)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>object</code> | options for this process |
-
-<a name="module_AnomalyReports.AnomalyReport+resolve"></a>
-
-##### anomalyReport.resolve(opts) ⇒ <code>AnomalyReport</code>
-resolve
-
-Action the anomaly report
-
-**Kind**: instance method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>AnomalyReport</code> - this if successful, otherwise null  
-**Emits**: [<code>state</code>](#AnomalyReport+event_state)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| opts | <code>object</code> | options for this process |
-
-<a name="module_AnomalyReports.AnomalyReport+pause"></a>
-
-##### anomalyReport.pause(reason, opts) ⇒ <code>AnomalyReport</code>
-pause()
-
-Set the anomaly report to Paused state
-
-**Kind**: instance method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>AnomalyReport</code> - this anomaly report  
+**Kind**: instance method of [<code>Anomaly</code>](#module_Anomalies.Anomaly)  
+**Emit**: Anomaly#pause  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | reason | <code>string</code> | the reason for the pause |
-| opts | <code>object</code> | options for this process |
 
-<a name="module_AnomalyReports.AnomalyReport+force_resolve"></a>
+<a name="module_Anomalies.Anomaly+resume"></a>
 
-##### anomalyReport.force\_resolve(reason, opts) ⇒ <code>AnomalyReport</code>
-force_resolve()
+##### anomaly.resume(reason)
+resume
 
-Force the anomaly report to Resolved state
+Resume this anomaly
 
-**Kind**: instance method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>AnomalyReport</code> - this anomaly report  
+**Kind**: instance method of [<code>Anomaly</code>](#module_Anomalies.Anomaly)  
+**Emit**: Anomaly#resume  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| reason | <code>string</code> | the reason for the force resolve |
-| opts | <code>object</code> | options for this process |
+| reason | <code>string</code> | the reason for the resume |
 
-<a name="module_AnomalyReports.AnomalyReport+save"></a>
+<a name="module_Anomalies.Anomaly.allowed_states"></a>
 
-##### anomalyReport.save() ⇒ <code>AnomalyReport</code>
-Save
+##### Anomaly.allowed\_states ⇒ <code>array</code>
+allowed_states (getter)
 
-**Kind**: instance method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>AnomalyReport</code> - this  
-<a name="module_AnomalyReports.AnomalyReport._detect"></a>
+**Kind**: static property of [<code>Anomaly</code>](#module_Anomalies.Anomaly)  
+**Returns**: <code>array</code> - the allowed states  
+<a name="module_Anomalies.Anomaly.detect"></a>
 
-##### AnomalyReport.\_detect(data, opts) ⇒ <code>boolean</code>
+##### Anomaly.detect(system, opts) ⇒ <code>boolean</code>
 Detect
 
 Detect an anomaly
 Override me!
 
-**Kind**: static method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>boolean</code> - true if the anomaly is detected, false otherwise  
+**Kind**: static method of [<code>Anomaly</code>](#module_Anomalies.Anomaly)  
+**Returns**: <code>boolean</code> - true if an anomaly is detected  
+**Emits**: [<code>activity</code>](#Anomaly+event_activity)  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| data | <code>object</code> |  | the data for this anomaly report (probably the system being analysed) |
-| [data.id] | <code>string</code> | <code>&quot;uuidv4()&quot;</code> | a unique id for this report |
-| opts | <code>object</code> |  | arbitrary options |
+| Param | Type | Description |
+| --- | --- | --- |
+| system | <code>object</code> | the system being analyzed |
+| opts | <code>object</code> | arbitrary options |
 
-<a name="module_AnomalyReports.AnomalyReport.detect"></a>
+<a name="module_Anomalies.Processor"></a>
 
-##### AnomalyReport.detect(data, opts, logger) ⇒ <code>AnomalyReport</code>
-Detect
+#### Anomalies.Processor
+AnomalyProcessor
 
-Detect an anomaly
+Process anomaly
 
-**Kind**: static method of [<code>AnomalyReport</code>](#module_AnomalyReports.AnomalyReport)  
-**Returns**: <code>AnomalyReport</code> - an anomaly report if detected, null otherwise  
+**Kind**: static class of [<code>Anomalies</code>](#module_Anomalies)  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| data | <code>object</code> |  | the data for this anomaly report (probably the system being analysed) |
-| [data.id] | <code>string</code> | <code>&quot;uuidv4()&quot;</code> | a unique id for this report |
-| opts | <code>object</code> |  | arbitrary options |
-| logger | <code>object</code> |  | a logger to use if an anomaly report is created |
+* [.Processor](#module_Anomalies.Processor)
+    * [.anomalies](#module_Anomalies.Processor+anomalies) ⇒ <code>Array.&lt;Anomaly&gt;</code>
+    * [.classes](#module_Anomalies.Processor+classes) ⇒ <code>Array.&lt;Anomaly&gt;</code>
+    * [.anomalies_with_state(state)](#module_Anomalies.Processor+anomalies_with_state) ⇒ <code>Array.&lt;Anomaly&gt;</code>
+    * [.detect(system, opts)](#module_Anomalies.Processor+detect)
+    * [.process()](#module_Anomalies.Processor+process) ⇒ <code>Promise.&lt;(Anomaly\|null)&gt;</code>
 
+<a name="module_Anomalies.Processor+anomalies"></a>
+
+##### processor.anomalies ⇒ <code>Array.&lt;Anomaly&gt;</code>
+Get all anomalies
+
+**Kind**: instance property of [<code>Processor</code>](#module_Anomalies.Processor)  
+**Returns**: <code>Array.&lt;Anomaly&gt;</code> - the queue of anomalies  
+<a name="module_Anomalies.Processor+classes"></a>
+
+##### processor.classes ⇒ <code>Array.&lt;Anomaly&gt;</code>
+Get all classes
+
+**Kind**: instance property of [<code>Processor</code>](#module_Anomalies.Processor)  
+**Returns**: <code>Array.&lt;Anomaly&gt;</code> - all Anomaly classes  
+<a name="module_Anomalies.Processor+anomalies_with_state"></a>
+
+##### processor.anomalies\_with\_state(state) ⇒ <code>Array.&lt;Anomaly&gt;</code>
+Get anomalies with a particular state
+
+**Kind**: instance method of [<code>Processor</code>](#module_Anomalies.Processor)  
+**Returns**: <code>Array.&lt;Anomaly&gt;</code> - anomalies with the specified state  
+**Throws**:
+
+- <code>Error</code> if state is invalid
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| state | <code>string</code> | The state to filter on |
+
+<a name="module_Anomalies.Processor+detect"></a>
+
+##### processor.detect(system, opts)
+Detect anomalies in a system
+
+Adds anomalies to the queue
+
+**Kind**: instance method of [<code>Processor</code>](#module_Anomalies.Processor)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| system | <code>object</code> | The system to detect anomalies in |
+| opts | <code>object</code> | Options to pass to the detect() methods |
+
+<a name="module_Anomalies.Processor+process"></a>
+
+##### processor.process() ⇒ <code>Promise.&lt;(Anomaly\|null)&gt;</code>
+Process one anomaly 
+
+Finds the first (by order) anomaly with a state of "Preaction" and processes it
+to the Resolved state (if possible).  May call .action(), .evaluate(), .revert()
+Events are bubbled up.
+
+**Kind**: instance method of [<code>Processor</code>](#module_Anomalies.Processor)  
+**Returns**: <code>Promise.&lt;(Anomaly\|null)&gt;</code> - the anomaly processed, or null if there are no anomalies to process.  You can check for success by checking the anomaly itself.  
+**Emits**: [<code>log</code>](#Anomaly+event_log), [<code>state</code>](#Anomaly+event_state), [<code>pause</code>](#Anomaly+event_pause), [<code>resume</code>](#Anomaly+event_resume), [<code>activity</code>](#Anomaly+event_activity)  
 
 <!-- apistop -->
