@@ -1,25 +1,20 @@
-# Anomaly Reports
-Resolvable, recoverable deficiency management
+# Anomaly
+Reversible, controlled anomaly detection and management
 
 ```
-async service_next() {
+const AR = require("anomaly-reports");
 
-    const ir = this.#queue.shift();
-    const params = {};
+class FixLowercase extends AR.AnomalyReports {
 
-    await ir.action(params).then(ir => {
-        return ir?.evaluate(params);
-    }).then(ir => {
-        return ir?.resolve(params);
-    });
-
-    if ( ir.state == "Queued" ) {
-        this.#queue.push(ir);
-    } else if ( ir.state != "Resolved" ) {
-        // TODO
-        await ir.force_review("Anomaly detector servicing ended in unexpected state "+ir.state, { ir_db:this.#ir_db }); // add db ref for auto-save
+    // Detect lowercase letters (we've decided to make system a string)
+    static async detect(system, opts) {
+        
+        return system.match(/[a-z]/)?:true:false;
     }
 }
+
+let processor = new AR.processor(/* logger */);
+processor.reports.push(new AR.report());
 ```
 
 ## Table of Contents
@@ -35,20 +30,43 @@ async service_next() {
 
 <!-- tocstop -->
 
-## Anomaly Report (AR) Workflow
+## Anomaly Workflow
 
-![State Graph](img/graph.png "AR State Graph")
+An Anomaly is a combination of state and history that pertain to an anomaly in a particular system, as well as a set of functions to manage that anomaly.
 
-For each problem (anomaly) you would like to manage, create a class that derives from `AnomalyReport.js`.  Override `_action()`, `_evaluate()`, and `_resolve()`; when your IR is processed, each one of these methods will be called in turn.  Your overridden functions are `async` and expected to the `throw` if there is a problem.   If this happens, your associated `_recover_` method will then be called.  If this also `throws`, the IR will be re-queued (go to `Queued` state) for a `NominalARError` or go to `Paused` state for any other kind if error.
+![Anomaly State Graph](img/anomaly_state_graph.png "Anomaly State Graph")
 
-IRs have built in `.log.{debug|info|warn|error}()` methods, and it is recommended that you use this for logging since it allows the IR to keep a rich internal log of everything you are doing.  If your constructor was passed a logger with similarly named functions, that logger will also be automatically called when you call the built in logger. 
+A few important departures from the original concept:
+1. `Anomaly.state` tracks only the state of the anomaly with respect to the `action()`.  
+2. Since 'paused' (or ManualReview) doesn't tell us anything about the state, it's actually just a property - not a state.  This is `.paused`.
+3. Activity notifications about work being done are events (e.g. `Anomaly#activity` -> `{"activity" : "detect", "progress" : "45" }`)
+4. We don't retain any logger references or emil 'error_log' events.  Instead we emit `Anomaly#log` events for all `Anomaly.log()` calls.  If you want to log these in a logger it will be trivial to do so.
+
+
+For each anomaly you would like to manage, create a class that derives from `Anomaly.Report` and override the appropriate functions:
+
+| Type     | Function       | Required | What does it do?                              |
+|----------|----------------|----------|-----------------------------------------------|
+| static   | `detect()`     | yes      | Detect an anomaly                             |
+| instance | `action()`     | no       | Correct the anomaly by changing `system`      |
+| instance | `revert()`     | no       | Undo `action()`                               |
+| instance | `evaluate()`   | no       | Evaluate the successfulness of `action()`     |
+| static   | `serialize()`  | no       | Allows us to save this report for future use  |
+| static   | `deserialize()`| no       | Allows us to restore this report from save    |
+
+ At a minimum, you must override the static `detect()` method.  
+ 
+ All these functions are `async`.  If you `throw` an error from `action()`, `revert()` will be called.  
+
+ If you implement `revert()`, you are expected to store whatever data you need during `action()` in order to perform the reversion.  You can do this externally, in a database, or you can store the data within your subclass.
+
+IRs have built in `.log.{debug|info|warn|error}()` methods, and it is recommended that you use this for logging since it allows the IR to keep a rich internal log of everything you are doing, accessable via `.history`.  If your constructor was passed a logger with similarly named functions, that logger will also be automatically called when you call the built in logger. 
 
 ## Todo
 
 - Better document the override methods
-- Remove unnecessary recovery methods and save() calls
-- Add test for detect()
-- Build queue class
+- Make example into test?  Also simpify - seems complicated
+- Fix tests
 
 ## Acknowledgements
 

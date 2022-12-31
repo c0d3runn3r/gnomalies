@@ -1,12 +1,14 @@
-const AnomalyReport  = require("./lib/AnomalyReport");
-const ARErrors = require("./lib/ARErrors");
+const Anomaly  = require("./lib/Anomaly");
+const Processor = require("./lib/Processor");
+const Errors = require("./lib/Errors");
 
 /**
- * @module AnomalyReports
+ * @module Anomalies
  */
 
 module.exports = exports = {
-    AnomalyReport : AnomalyReport,
-    NominalARError : ARErrors.NominalARError,
-    FatalARError : ARErrors.FatalARError
+    Anomaly : Anomaly,
+    Processor : Processor,
+    NominalError : Errors.NominalARError,
+    FatalError : Errors.FatalARError
 };
