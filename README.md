@@ -2,19 +2,31 @@
 Reversible, controlled anomaly detection and management
 
 ```
-const AR = require("anomaly-reports");
+const Gnomalies = require("../index.js");
 
-class FixLowercase extends AR.AnomalyReports {
+// This Anomaly "fixes" lowercase letters.  Skipping normal class syntax for brevity here...
+class EvilLowercase extends Gnomalies.Anomaly {}
+EvilLowercase.detect = async (system, opts) => system.str.match(/[a-z]/)?true:false;
+EvilLowercase.prototype.action = async (system, opts) => system.str = system.str.toUpperCase();
 
-    // Detect lowercase letters (we've decided to make system a string)
-    static async detect(system, opts) {
-        
-        return system.match(/[a-z]/)?:true:false;
-    }
-}
+// This one turns sad faces into happy faces
+class SadFace extends Gnomalies.Anomaly {}
+SadFace.detect = async (system, opts) => system.str.match(/😔/)?true:false;
+SadFace.prototype.action = async (system, opts) => system.str = system.str.replace(/😔/g, "🙂");
 
-let processor = new AR.processor(/* logger */);
-processor.reports.push(new AR.report());
+// Here is a system with things to fix
+let system ={ str: "Hello World 😔" };
+
+(async ()=>{
+
+    // Fix the system
+    let processor = new Gnomalies.Processor([EvilLowercase, SadFace]);
+    await processor.detect(system);  // processor.anomalies now contains relevant anomalies
+    await processor.process(system);
+
+    console.log(system.str); // "HELLO WORLD 🙂"
+
+})();
 ```
 
 ## Table of Contents
