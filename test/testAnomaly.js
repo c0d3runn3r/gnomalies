@@ -5,7 +5,7 @@ const assert = require("assert");
 let report;
 
 
-describe("AnomalyReport", function()  {
+describe("Anomaly", function()  {
 
     this.beforeEach(function() {
         report = new Anomaly();
@@ -15,7 +15,7 @@ describe("AnomalyReport", function()  {
 
         it("should start in preaction state", async function() {
 
-            assert.equal(report.state, "Preaction", "initial state should be preaction");
+            assert.equal(report.state, "preaction", "initial state should be preaction");
         });
 
         it("should self assign a v4 uuid if no id is passed in", async function() {
@@ -52,16 +52,16 @@ describe("AnomalyReport", function()  {
 
         it("should return 1 if one state change has occurred", async function() {
 
-            report._state = "Postaction";
-            assert.equal(report.iterations("Postaction"), 1, "iterations should be 1");
+            report._state = "postaction";
+            assert.equal(report.iterations("postaction"), 1, "iterations should be 1");
         });
 
         it("should return 2 if two state changes have occurred", async function() {
 
-            report._state = "Postaction";
-            report._state = "Resolved";
-            report._state = "Postaction";
-            assert.equal(report.iterations("Postaction"), 2, "iterations should be 2");
+            report._state = "postaction";
+            report._state = "resolved";
+            report._state = "postaction";
+            assert.equal(report.iterations("postaction"), 2, "iterations should be 2");
         });
     });
 
@@ -76,13 +76,42 @@ describe("AnomalyReport", function()  {
 
             report.on("state", (e) => {
 
-                assert.equal(e.old_state, "Preaction", "old state should be Preaction");
-                assert.equal(e.new_state, "Postaction", "new state should be Postaction");
+                assert.equal(e.old_state, "preaction", "old state should be preaction");
+                assert.equal(e.new_state, "postaction", "new state should be postaction");
                 res();
             });
-            report._state = "Postaction";
+            report._state = "postaction";
             await done;
         });
+    });
+
+    describe("fingerprint()", function() {
+
+        it("should return a string of length 32", async function() {
+
+            let system = { message: "hello there", score:  32 };
+            assert.equal(typeof report.fingerprint(system), "string", "fingerprint should be a string");
+            assert.equal(report.fingerprint(system).length, 64, "fingerprint should be 64 characters long");
+        });
+
+        it("changing the system should result in a different fingerprint", async function() {
+
+            let system = { message: "hello there", score:  32 };
+            let a = report.fingerprint(system);
+            system.message = "hello there again";
+            let b = report.fingerprint(system);
+            assert.notEqual(a, b, "fingerprint should be different");
+        });
+
+        it("changing a non watched key should not result in a different fingerprint", async function() {
+                
+                let system = { message: "hello there", score:  32 };
+                let a = report.fingerprint(system, ["message"]);
+                system.score = 33;
+                let b = report.fingerprint(system, ["message"]);
+                assert.equal(a, b, "fingerprint should be the same");
+        });
+
     });
 
 });
