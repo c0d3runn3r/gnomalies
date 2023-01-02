@@ -3,7 +3,7 @@ const Processor = require("./lib/Processor");
 const Errors = require("./lib/Errors");
 
 /**
- * @module Anomalies
+ * @module Gnomalies
  */
 
 module.exports = exports = {
