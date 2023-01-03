@@ -2,7 +2,7 @@
 Reversible, controlled anomaly detection and management 
 
 <p style="float:right">
-![Gnomalies Gnome](img/gnome.png "The Gnome")
+<img align="right" src="img/gnome.png">
 </p>
 
 
