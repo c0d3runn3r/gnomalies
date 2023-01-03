@@ -1,6 +1,5 @@
 # Gnomalies
 Reversible, controlled anomaly detection and management
-<img align="right" src="img/gnome.png">
 
 ## Table of Contents
 
@@ -17,6 +16,7 @@ Reversible, controlled anomaly detection and management
   * [Gnomalies](#gnomalies)
 
 <!-- tocstop -->
+<img align="right" src="img/gnome.png">
 
 ## Example
 ```
