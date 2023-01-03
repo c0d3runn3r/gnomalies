@@ -1,12 +1,15 @@
 # Gnomalies
 Reversible, controlled anomaly detection and management
-<img style="float:right" src="img/gnome.png">
+<img alighn="right" src="img/gnome.png">
 
 ## Table of Contents
 
 <!-- toc -->
 
-- [Overview](#overview)
+- [Example](#example)
+- [Anomalies](#anomalies)
+- [Processor](#processor)
+- [Subclassing notes](#subclassing-notes)
 - [Todo](#todo)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
@@ -44,7 +47,7 @@ let system ={ str: "Hello World 😔" };
 })();
 ```
 
-## Overview
+## Anomalies 
 We define a *system* as "an entity represented by a collection of values".  An *anomaly* is the condition that a subset of those settings are in an inferior state that could potentially be transformed into a superior state. The `Anomaly` class containes a set of functions that allow us to process these anomalies in a systematic way.
 
 | Function that gets called        | Override this function    | Purpose                                                    |
@@ -56,11 +59,17 @@ We define a *system* as "an entity represented by a collection of values".  An *
 | `Anomaly.fingerprint(system)`    | `_fingerprint(system)`    | fingerprint(revert(action(system))) == fingerprint(system) |
 | `Anomaly.serialize(opts, keys)`  | `_serialize()`            | Serialize ourself for storage                              |
 
-As you can see, all normally overridden functions start with an `_underscore`.  Most of these functions have sensible defaults.  See examples and the function documentation.  Generally, when an anomaly is actioned we take before-and-after fingerprints so that we can ensure any reversion is done properly and actually results in a resoration of the original state.  We also check fingerprints before starting a reversion (to make sure we are reverting the same thing we actioned). By default, this is all done by taking the SHA256 hash of  `JSON.serialize(system)`.  Most of the time you will likely want to either (a) override `_serialize()` to call it's base function with a reduced set of keys - so we don't fingerprint the whole object - or else pass `{opts.use_fingerprints : false}` when you construct an Anomaly in order to turn fingerprinting off completely.
+As you can see, all normally overridden functions start with an `_underscore`.  Most of these functions have sensible defaults.  See examples and the function documentation.  Generally, when an anomaly is actioned we take before-and-after fingerprints so that we can ensure any reversion is done properly and actually results in a resoration of the original state.  We also check fingerprints before starting a reversion (to make sure we are reverting the same thing we actioned). By default, this is all done by taking the SHA256 hash of  `JSON.serialize(system)`.  Most of the time you will likely want to either (a) override `_fingerprint()` to call it's base function with a reduced set of keys - so we don't fingerprint the whole object - or else pass `{opts.use_fingerprints : false}` when you construct an Anomaly in order to turn fingerprinting off completely (not recommended).
 
-Errors thrown in `action()` result in an automatic call to `revert()`.  If `revert()` succeeds, the anomaly is left paused in a `preaction` state.  If `revert()` also throws an error, the anomaly is left paused in a `postaction` state.  When fingerprints are enabled, any fingerprint failure will result in `revert()` throwing an error.  
+## Processor
+A helpful `Processor` class is included that can automate much of the anomaly detection, processing, error handling, and reversion work.  To use a Processor, pass an array of Anomaly classes (not instances!) to it's constructor.  Then call `.detect()`, passing a system.  The Processor will call each anomaly's `.detect()` method, constructing anomaly objects for those that return `true` and storing the resulting array in `.anomalies`.  You can then call `Processor.process()` to `.action()` each anomaly on the system.
 
-Once you have processed all anomalies, you should check to see which ones are paused.  Anomalies paused in a `postaction` state probably need manual intervention.
+
+When using `processor.process()`, errors thrown in `anomaly.action()` result in an automatic call to `anomaly.revert()`.   `revert()` will first check `.state` and  `.fingerprints` to see if we are in a restorable state - for example, if we are in the `preaction` state and `fingerprint() == fingerprints.preaction` then no change was made and nothing needs to be done.  If we are in a `postaction` state and `fingerprint() == fingerprints.postacton` we will call `_revert()`, re-check that `fingerprint()` now matches `fingerprints.preaction`, and leave the anomaly paused back in the `preaction` state.
+
+If any of this fails, `revert()` throws an error and `.dirty` is set to `true`. 
+
+Once you have processed all anomalies, you should check to see which ones are paused, and if any of those are dirty.
 
 ![Anomaly State Graph](img/anomaly_state_graph.png "Anomaly State Graph")
 
@@ -70,10 +79,10 @@ A few important departures from the original concept (//delete me after everyone
 3. Activity notifications about work being done are events (e.g. `Anomaly#activity` -> `{"activity" : "detect", "progress" : "45" }`)
 4. We don't retain any logger references or emit 'error_log' events.  Instead we emit `Anomaly#log` events for all `Anomaly.log()` calls.  If you want to log these in a logger, just consume them from the `Processor`.
 
-Subclassing notes:
-- At a minimum, you must override the static `detect()` method.  
-- Most overridden functions are `async`.  If you `throw` an error from `action()`, `revert()` will be called.  
+## Subclassing notes 
+- Most overridden functions are `async`
 - If you implement `revert()`, you are expected to store whatever data you need during `action()` in order to perform the reversion.  You can do this externally, in a database, or you can store the data within your subclass.
+- You may emit Anomaly#activity with your progress, in percent.  `Anomaly` will emit 0 and 100 for you as bookends automatically.
 - Use the built in `Anomaly.log.{debug|info|warn|error}()` methods for logging.  It is accessable via `.history`.  Each call will also emit `Anomaly#log` events, making it easy to connect with your external logging engine.
 
 ## Todo
@@ -99,6 +108,9 @@ Copyright (c) 2022 Nova Dynamics
     * [.Anomaly](#module_Gnomalies.Anomaly)
         * [new Anomaly(params)](#new_module_Gnomalies.Anomaly_new)
         * _instance_
+            * [.fingerprints](#module_Gnomalies.Anomaly+fingerprints) ⇒ <code>object</code> \| <code>string</code> \| <code>string</code>
+            * [.dirty](#module_Gnomalies.Anomaly+dirty) ⇒ <code>boolean</code>
+            * [.dirty](#module_Gnomalies.Anomaly+dirty)
             * [.use_fingerprints](#module_Gnomalies.Anomaly+use_fingerprints) ⇒ <code>boolean</code>
             * [.name](#module_Gnomalies.Anomaly+name) ⇒ <code>string</code>
             * [.paused](#module_Gnomalies.Anomaly+paused) ⇒ <code>boolean</code>
@@ -110,6 +122,7 @@ Copyright (c) 2022 Nova Dynamics
             * [.revert(system, opts)](#module_Gnomalies.Anomaly+revert) ⇒ <code>Promise</code>
             * [._revert(system, opts)](#module_Gnomalies.Anomaly+_revert) ⇒ <code>Promise</code>
             * [.evaluate(system, opts)](#module_Gnomalies.Anomaly+evaluate) ⇒ <code>Promise</code>
+            * [._evaluate(system, opts)](#module_Gnomalies.Anomaly+_evaluate) ⇒ <code>Promise</code>
             * [.fingerprint(system, keys)](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
             * [.iterations([state])](#module_Gnomalies.Anomaly+iterations) ⇒ <code>number</code>
             * [.pause(reason)](#module_Gnomalies.Anomaly+pause)
@@ -143,6 +156,9 @@ If your processor will be using fingerprints, you should also make sure .fingerp
 * [.Anomaly](#module_Gnomalies.Anomaly)
     * [new Anomaly(params)](#new_module_Gnomalies.Anomaly_new)
     * _instance_
+        * [.fingerprints](#module_Gnomalies.Anomaly+fingerprints) ⇒ <code>object</code> \| <code>string</code> \| <code>string</code>
+        * [.dirty](#module_Gnomalies.Anomaly+dirty) ⇒ <code>boolean</code>
+        * [.dirty](#module_Gnomalies.Anomaly+dirty)
         * [.use_fingerprints](#module_Gnomalies.Anomaly+use_fingerprints) ⇒ <code>boolean</code>
         * [.name](#module_Gnomalies.Anomaly+name) ⇒ <code>string</code>
         * [.paused](#module_Gnomalies.Anomaly+paused) ⇒ <code>boolean</code>
@@ -154,6 +170,7 @@ If your processor will be using fingerprints, you should also make sure .fingerp
         * [.revert(system, opts)](#module_Gnomalies.Anomaly+revert) ⇒ <code>Promise</code>
         * [._revert(system, opts)](#module_Gnomalies.Anomaly+_revert) ⇒ <code>Promise</code>
         * [.evaluate(system, opts)](#module_Gnomalies.Anomaly+evaluate) ⇒ <code>Promise</code>
+        * [._evaluate(system, opts)](#module_Gnomalies.Anomaly+_evaluate) ⇒ <code>Promise</code>
         * [.fingerprint(system, keys)](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
         * [.iterations([state])](#module_Gnomalies.Anomaly+iterations) ⇒ <code>number</code>
         * [.pause(reason)](#module_Gnomalies.Anomaly+pause)
@@ -182,6 +199,35 @@ constructor
 | params.id | <code>string</code> | the id |
 | params.state | <code>string</code> | the state |
 | params.paused | <code>boolean</code> | whether the anomaly is paused |
+
+<a name="module_Gnomalies.Anomaly+fingerprints"></a>
+
+##### anomaly.fingerprints ⇒ <code>object</code> \| <code>string</code> \| <code>string</code>
+fingerprints (getter)
+
+**Kind**: instance property of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
+**Returns**: <code>object</code> - fingerprints the fingerprints<code>string</code> - fingerprints.preaction the fingerprint before the action<code>string</code> - fingerprints.postaction the fingerprint after the action  
+<a name="module_Gnomalies.Anomaly+dirty"></a>
+
+##### anomaly.dirty ⇒ <code>boolean</code>
+dirty (getter)
+
+This flag is set by the processor to indicate we failed somewhere during a state transition
+
+**Kind**: instance property of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
+**Returns**: <code>boolean</code> - true if this anomaly is dirty  
+<a name="module_Gnomalies.Anomaly+dirty"></a>
+
+##### anomaly.dirty
+dirty (setter)
+
+This flag is set by the processor to indicate we failed somewhere during a state transition
+
+**Kind**: instance property of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| dirty | <code>boolean</code> | true if this anomaly is dirty |
 
 <a name="module_Gnomalies.Anomaly+use_fingerprints"></a>
 
@@ -230,13 +276,18 @@ state (getter)
 <a name="module_Gnomalies.Anomaly+action"></a>
 
 ##### anomaly.action(system, opts) ⇒ <code>Promise</code>
-Action wrapper
+Action
 
-Perform the action for this anomaly.
+Performs the action for this anomaly.  If the anomaly is not in a preaction state, an error is thrown.  When using fingerprints, we take the fingerprint before and after calling _action().
 Do not override me. Override _action() instead!
 
 **Kind**: instance method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
 **Returns**: <code>Promise</code> - promise that resolves when the action is complete  
+**Throws**:
+
+- <code>Error</code> error if the anomaly is not in a preaction state
+
+**Emits**: [<code>activity</code>](#Anomaly+event_activity)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -266,9 +317,9 @@ Override me to add specific behavior!
 <a name="module_Gnomalies.Anomaly+revert"></a>
 
 ##### anomaly.revert(system, opts) ⇒ <code>Promise</code>
-Revert wrapper
+Revert
 
-Undo the action for this anomaly.
+Undo the action for this anomaly.  If we are in a preaction state and using fingerprints, we verify the fingerprint and then return.  Otherwise, we check that we match the postaction fingerprint; call _revert(), and then check the preaction fingerprint.  If any of this fails, we throw an error.
 Do not override me. Override _revert() instead!
 
 **Kind**: instance method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
@@ -277,6 +328,7 @@ Do not override me. Override _revert() instead!
 
 - <code>Error</code> error on error
 
+**Emits**: [<code>activity</code>](#Anomaly+event_activity)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -308,10 +360,10 @@ Override me to add specific behavior!
 ##### anomaly.evaluate(system, opts) ⇒ <code>Promise</code>
 Evaluate
 
-Evaluate the success of our action or reversion.
+Evaluate the success of our action.
 Throw an error if you believe the action or reversion failed.
 Can also be used for post-action cleanup, statistics, etc.
-Override me to add specific behavior!
+Do not override me. Override _evaluate() instead!
 
 **Kind**: instance method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
 **Returns**: <code>Promise</code> - promise that resolves when the evaluation is complete  
@@ -319,6 +371,25 @@ Override me to add specific behavior!
 
 - <code>Error</code> error on error
 
+**Emits**: [<code>activity</code>](#Anomaly+event_activity)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| system | <code>object</code> | the system being analyzed |
+| opts | <code>object</code> | arbitrary options |
+
+<a name="module_Gnomalies.Anomaly+_evaluate"></a>
+
+##### anomaly.\_evaluate(system, opts) ⇒ <code>Promise</code>
+Evaluate
+
+Evaluate the success of our action.
+Throw an error if you believe the action or reversion failed.
+Can also be used for post-action cleanup, statistics, etc.
+Override me to add specific behavior!
+
+**Kind**: instance method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
+**Returns**: <code>Promise</code> - promise that resolves when the evaluation is complete  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -556,7 +627,7 @@ Adds anomalies to the queue
 Process all anomalies
 
 Processes all anomalies in the queue from the preaction state to the resolved state (if possible).  May call .action(), .evaluate(), .revert()
-Events are bubbled up from each anomaly.
+Events are bubbled up from each anomaly.  Anomalies that fail between states will be paused and will be set to `.dirty` state
 
 **Kind**: instance method of [<code>Processor</code>](#module_Gnomalies.Processor)  
 **Returns**: <code>Promise</code> - resolves when all anomalies are processed  
@@ -574,7 +645,7 @@ Process one anomaly
 
 Finds the first (by order) anomaly with a state of "preaction" and processes it
 to the resolved state (if possible).  May call .action(), .evaluate(), .revert()
-Events are bubbled up.
+Events are bubbled up. Anomalies that fail between states will be paused and will be set to `.dirty` state
 
 **Kind**: instance method of [<code>Processor</code>](#module_Gnomalies.Processor)  
 **Returns**: <code>Promise.&lt;(Anomaly\|null)&gt;</code> - the anomaly processed, or null if there are no anomalies to process.  You can check for success by checking the anomaly itself.  
