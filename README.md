@@ -2,8 +2,8 @@
 Reversible, controlled anomaly detection and management 
 
 <p><img align="right" src="img/gnome.png">
-![Gnomaly](img/gnome.png "The Gnomaly"){height=300 align=right}
 </p>
+![Gnomaly](img/gnome.png "The Gnomaly"){height=300 align=right}
 
 
 ## Table of Contents
