@@ -1,6 +1,5 @@
 # Gnomalies
-Reversible, controlled anomaly detection and management
-<img align="right" src="img/gnome.png">
+Reversible, controlled anomaly detection and management <img align="right" src="img/gnome.png">
 
 ## Table of Contents
 
