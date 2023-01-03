@@ -1,6 +1,21 @@
 # Gnomalies
 Reversible, controlled anomaly detection and management
+<img style="float:right" src="img/gnome.png">
 
+## Table of Contents
+
+<!-- toc -->
+
+- [Overview](#overview)
+- [Todo](#todo)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
+- [API](#api)
+  * [Gnomalies](#gnomalies)
+
+<!-- tocstop -->
+
+## Example
 ```
 const Gnomalies = require("../index.js");
 
@@ -28,19 +43,6 @@ let system ={ str: "Hello World 😔" };
 
 })();
 ```
-
-## Table of Contents
-
-<!-- toc -->
-
-- [Overview](#overview)
-- [Todo](#todo)
-- [Acknowledgements](#acknowledgements)
-- [License](#license)
-- [API](#api)
-  * [Gnomalies](#gnomalies)
-
-<!-- tocstop -->
 
 ## Overview
 We define a *system* as "an entity represented by a collection of values".  An *anomaly* is the condition that a subset of those settings are in an inferior state that could potentially be transformed into a superior state. The `Anomaly` class containes a set of functions that allow us to process these anomalies in a systematic way.
