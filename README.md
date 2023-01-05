@@ -288,7 +288,7 @@ Do not override me. Override _action() instead!
 **Returns**: <code>Promise</code> - promise that resolves when the action is complete  
 **Throws**:
 
-- <code>Error</code> error if the anomaly is not in a preaction state
+- <code>Error</code> error if the anomaly is not in a preaction state or system is undefined
 
 **Emits**: [<code>activity</code>](#Anomaly+event_activity)  
 
@@ -471,8 +471,6 @@ allowed_states (getter)
 <a name="module_Gnomalies.Anomaly.detect"></a>
 
 ##### Anomaly.detect(system, opts) ⇒ <code>Promiose.&lt;boolean&gt;</code>
-Detect wrapper
-
 Detect an anomaly.
 Don't override me. Override _detect() instead!
 
