@@ -51,24 +51,25 @@ let system ={ str: "Hello World 😔" };
 ## Anomalies 
 We define a *system* as "an entity represented by a collection of values".  An *anomaly* is the condition that a subset of those settings are in an inferior state that could potentially be transformed into a superior state. The `Anomaly` class containes a set of functions that allow us to process these anomalies in a systematic way.
 
-| Function that gets called        | Override this function    | Purpose                                                    |
-|----------------------------------|---------------------------|------------------------------------------------------------|
-| `Anomaly.detect(system, opts)`   | `_detect(system, opts)`   | Detect an anomaly (static function!)                       |
-| `Anomaly.action(system, opts)`   | `_action(system, opts)`   | Correct the anomaly by changing `system`                   |
-| `Anomaly.revert(system, opts)`   | `_revert(system, opts)`   | Undo `action()`                                            |
-| `Anomaly.evaluate(system, opts)` | `_evaluate(system, opts)` | Evaluate the successfulness of `action()` or `revert()`    |
-| `Anomaly.fingerprint(system)`    | `_fingerprint(system)`    | fingerprint(revert(action(system))) == fingerprint(system) |
-| `Anomaly.serialize(opts, keys)`  | `_serialize()`            | Serialize ourself for storage                              |
+| Function that gets called     | Override this function    | Purpose                                                    |
+|-------------------------------|---------------------------|------------------------------------------------------------|
+| `Anomaly.detect(system, opts)`| `_detect(system, opts)`   | Detect an anomaly (static function!)                       |
+| `.action(system, opts)`       | `_action(system, opts)`   | Correct the anomaly by changing `system`                   |
+| `.revert(system, opts)`       | `_revert(system, opts)`   | Undo `action()`                                            |
+| `.evaluate(system, opts)`     | `_evaluate(system, opts)` | Evaluate the successfulness of `action()` or `revert()`    |
 
-As you can see, all normally overridden functions start with an `_underscore`.  Most of these functions have sensible defaults.  See examples and the function documentation.  Generally, when an anomaly is actioned we take before-and-after fingerprints so that we can ensure any reversion is done properly and actually results in a resoration of the original state.  We also check fingerprints before starting a reversion (to make sure we are reverting the same thing we actioned). By default, this is all done by taking the SHA256 hash of  `JSON.serialize(system)`.  Most of the time you will likely want to either (a) override `_fingerprint()` to call it's base function with a reduced set of keys - so we don't fingerprint the whole object - or else pass `{opts.use_fingerprints : false}` when you construct an Anomaly in order to turn fingerprinting off completely (not recommended).
+As you can see, the workhorse anomaly management functions you should override start with `_underscore`.  Do not call the underscore function directly however; please call the wrapper (no underscore).  This allows us to handle events, fingerprinting, etc while keeping your code simple.
+
+ When an anomaly is actioned we take before-and-after fingerprints so that we can ensure any reversion is done properly and actually results in a resoration of the original state.  We also check fingerprints before starting a reversion (to make sure we are reverting the same thing we actioned). By default, this is all done by taking the SHA256 hash of  `JSON.serialize(system)`.  Do make sure you set `fingerprint_keys` to something sensible if you don't want everything about your *system* fingerprinted.
+
+ `revert()` is intelligent enough to know that a fingerprint matching your preaction fingerprint means no reversion is necessary; overloaded `_revert()` will never gets called. In that case, the fingerprint is further checked against the postaction fingerprint.  A match means that we should be able to perform a clean reversion; `_revert()` is called.  A mismatch means we are in some sort of dirty state; an error is thrown.
+
+ Once `_revert()` is done, the wrapping `revert()` checks fingerprints to make sure we have a pristine `preaction` state.  A mismatch will throw an error.
 
 ## Processor
 A helpful `Processor` class is included that can automate much of the anomaly detection, processing, error handling, and reversion work.  To use a Processor, pass an array of Anomaly classes (not instances!) to it's constructor.  Then call `.detect()`, passing a system.  The Processor will call each anomaly's `.detect()` method, constructing anomaly objects for those that return `true` and storing the resulting array in `.anomalies`.  You can then call `Processor.process()` to `.action()` each anomaly on the system.
 
-
-When using `processor.process()`, errors thrown in `anomaly.action()` result in an automatic call to `anomaly.revert()`.   `revert()` will first check `.state` and  `.fingerprints` to see if we are in a restorable state - for example, if we are in the `preaction` state and `fingerprint() == fingerprints.preaction` then no change was made and nothing needs to be done.  If we are in a `postaction` state and `fingerprint() == fingerprints.postacton` we will call `_revert()`, re-check that `fingerprint()` now matches `fingerprints.preaction`, and leave the anomaly paused back in the `preaction` state.
-
-If any of this fails, `revert()` throws an error and `.dirty` is set to `true`. 
+When using `processor.process()`, errors thrown in `anomaly.action()` result in an automatic call to `anomaly.revert()`.   If `revert()` also throws, the `anomaly.dirty` will be set to `true`.
 
 Once you have processed all anomalies, you should check to see which ones are paused, and if any of those are dirty.
 
@@ -87,7 +88,8 @@ A few important departures from the original concept (//delete me after everyone
 - Use the built in `Anomaly.log.{debug|info|warn|error}()` methods for logging.  It is accessable via `.history`.  Each call will also emit `Anomaly#log` events, making it easy to connect with your external logging engine.
 
 ## Todo
-- Make more tests?
+- How does one set `fingerprint_keys`?
+- Turn examples into tests
 
 ## Acknowledgements
 
