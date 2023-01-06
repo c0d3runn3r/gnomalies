@@ -1,4 +1,5 @@
 const Gnomalies = require("../index.js");
+const assert = require("assert");
 
 // This Anomaly "fixes" lowercase letters.  Skipping normal class syntax for brevity here...
 class EvilLowercase extends Gnomalies.Anomaly {}
@@ -13,14 +14,17 @@ SadFace.prototype.action = async (system, opts) => system.str = system.str.repla
 // Here is a system with things to fix
 let system ={ str: "Hello World 😔" };
 
-(async ()=>{
+describe("Example 1", function() {
 
-    // Fix the system
-    let processor = new Gnomalies.Processor([EvilLowercase, SadFace]);
-    await processor.detect(system);  // processor.anomalies now contains relevant anomalies
-    await processor.process(system);
+    it("Works as described", async function() {
 
-    console.log(system.str); // "HELLO WORLD"
+        // Fix the system
+        let processor = new Gnomalies.Processor([EvilLowercase, SadFace]);
+        await processor.detect(system);  // processor.anomalies now contains relevant anomalies
+        await processor.process(system);
 
-})();
+        assert.equal(system.str, "HELLO WORLD 🙂", "Example 1 should work as described");
+    });
 
+
+});

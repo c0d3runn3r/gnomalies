@@ -89,7 +89,7 @@ A few important departures from the original concept (//delete me after everyone
 - Use the built in `Anomaly.log.{debug|info|warn|error}()` methods for logging.  It is accessable via `.history`.  Each call will also emit `Anomaly#log` events, making it easy to connect with your external logging engine.
 
 ## Todo
-- Turn examples into tests
+- 
 
 ## Acknowledgements
 
@@ -114,7 +114,6 @@ Copyright (c) 2022 Nova Dynamics
             * [.fingerprints](#module_Gnomalies.Anomaly+fingerprints) ⇒ <code>object</code> \| <code>string</code> \| <code>string</code>
             * [.dirty](#module_Gnomalies.Anomaly+dirty) ⇒ <code>boolean</code>
             * [.dirty](#module_Gnomalies.Anomaly+dirty)
-            * [.use_fingerprints](#module_Gnomalies.Anomaly+use_fingerprints) ⇒ <code>boolean</code>
             * [.name](#module_Gnomalies.Anomaly+name) ⇒ <code>string</code>
             * [.paused](#module_Gnomalies.Anomaly+paused) ⇒ <code>boolean</code>
             * [.id](#module_Gnomalies.Anomaly+id) ⇒ <code>string</code>
@@ -159,7 +158,6 @@ If your processor will be using fingerprints, you should also make sure .fingerp
         * [.fingerprints](#module_Gnomalies.Anomaly+fingerprints) ⇒ <code>object</code> \| <code>string</code> \| <code>string</code>
         * [.dirty](#module_Gnomalies.Anomaly+dirty) ⇒ <code>boolean</code>
         * [.dirty](#module_Gnomalies.Anomaly+dirty)
-        * [.use_fingerprints](#module_Gnomalies.Anomaly+use_fingerprints) ⇒ <code>boolean</code>
         * [.name](#module_Gnomalies.Anomaly+name) ⇒ <code>string</code>
         * [.paused](#module_Gnomalies.Anomaly+paused) ⇒ <code>boolean</code>
         * [.id](#module_Gnomalies.Anomaly+id) ⇒ <code>string</code>
@@ -228,15 +226,6 @@ This flag is set by the processor to indicate we failed somewhere during a state
 | --- | --- | --- |
 | dirty | <code>boolean</code> | true if this anomaly is dirty |
 
-<a name="module_Gnomalies.Anomaly+use_fingerprints"></a>
-
-##### anomaly.use\_fingerprints ⇒ <code>boolean</code>
-Use fingerprints (getter)
-
-We don't have a setter for this because it is set in the constructor, and we can't go back and create fingerprints for all the actions we've already taken.
-
-**Kind**: instance property of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
-**Returns**: <code>boolean</code> - true if we are configured to use fingerprints  
 <a name="module_Gnomalies.Anomaly+name"></a>
 
 ##### anomaly.name ⇒ <code>string</code>
