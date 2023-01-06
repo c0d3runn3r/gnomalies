@@ -49,9 +49,9 @@ let system ={ str: "Hello World 😔" };
 ```
 
 ## Anomalies 
-We define a *system* as "an entity represented by a collection of values".  An *anomaly* is the condition that a subset of those settings are in an inferior state that could potentially be transformed into a superior state. The `Anomaly` class containes a set of functions that allow us to process these anomalies in a systematic way.
+We define a *system* as "an entity represented by a collection of values".  An *anomaly* is the condition that a subset of those values are in an inferior state that could potentially be transformed into a superior state. The `Anomaly` class containes a set of functions that allow us to process these anomalies in a systematic way, including fingerprinting and reversion management.
 
-| Function that gets called     | Override this function    | Purpose                                                    |
+| Wrapper                       | Override this function    | Purpose                                                    |
 |-------------------------------|---------------------------|------------------------------------------------------------|
 | `Anomaly.detect(system, opts)`| `_detect(system, opts)`   | Detect an anomaly (static function!)                       |
 | `.action(system, opts)`       | `_action(system, opts)`   | Correct the anomaly by changing `system`                   |
