@@ -121,19 +121,16 @@ Copyright (c) 2022 Nova Dynamics
             * [.history](#module_Gnomalies.Anomaly+history) ⇒ <code>array</code>
             * [.state](#module_Gnomalies.Anomaly+state) ⇒ <code>string</code>
             * [.action(system, opts)](#module_Gnomalies.Anomaly+action) ⇒ <code>Promise</code>
-            * [._action(system, opts)](#module_Gnomalies.Anomaly+_action) ⇒ <code>Promise</code>
             * [.revert(system, opts)](#module_Gnomalies.Anomaly+revert) ⇒ <code>Promise</code>
-            * [._revert(system, opts)](#module_Gnomalies.Anomaly+_revert) ⇒ <code>Promise</code>
             * [.evaluate(system, opts)](#module_Gnomalies.Anomaly+evaluate) ⇒ <code>Promise</code>
-            * [._evaluate(system, opts)](#module_Gnomalies.Anomaly+_evaluate) ⇒ <code>Promise</code>
             * [.fingerprint(system, keys)](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
             * [.iterations([state])](#module_Gnomalies.Anomaly+iterations) ⇒ <code>number</code>
             * [.pause(reason)](#module_Gnomalies.Anomaly+pause)
             * [.resume(reason)](#module_Gnomalies.Anomaly+resume)
         * _static_
             * [.allowed_states](#module_Gnomalies.Anomaly.allowed_states) ⇒ <code>array</code>
+            * [._detect()](#module_Gnomalies.Anomaly._detect)
             * [.detect(system, opts)](#module_Gnomalies.Anomaly.detect) ⇒ <code>Promiose.&lt;boolean&gt;</code>
-            * [._detect(system, opts)](#module_Gnomalies.Anomaly._detect) ⇒ <code>Promiose.&lt;boolean&gt;</code>
             * [.serialize(keys)](#module_Gnomalies.Anomaly.serialize) ⇒ <code>string</code>
             * [.from_serialized(str)](#module_Gnomalies.Anomaly.from_serialized) ⇒ <code>Anomaly</code>
     * [.Processor](#module_Gnomalies.Processor)
@@ -169,19 +166,16 @@ If your processor will be using fingerprints, you should also make sure .fingerp
         * [.history](#module_Gnomalies.Anomaly+history) ⇒ <code>array</code>
         * [.state](#module_Gnomalies.Anomaly+state) ⇒ <code>string</code>
         * [.action(system, opts)](#module_Gnomalies.Anomaly+action) ⇒ <code>Promise</code>
-        * [._action(system, opts)](#module_Gnomalies.Anomaly+_action) ⇒ <code>Promise</code>
         * [.revert(system, opts)](#module_Gnomalies.Anomaly+revert) ⇒ <code>Promise</code>
-        * [._revert(system, opts)](#module_Gnomalies.Anomaly+_revert) ⇒ <code>Promise</code>
         * [.evaluate(system, opts)](#module_Gnomalies.Anomaly+evaluate) ⇒ <code>Promise</code>
-        * [._evaluate(system, opts)](#module_Gnomalies.Anomaly+_evaluate) ⇒ <code>Promise</code>
         * [.fingerprint(system, keys)](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
         * [.iterations([state])](#module_Gnomalies.Anomaly+iterations) ⇒ <code>number</code>
         * [.pause(reason)](#module_Gnomalies.Anomaly+pause)
         * [.resume(reason)](#module_Gnomalies.Anomaly+resume)
     * _static_
         * [.allowed_states](#module_Gnomalies.Anomaly.allowed_states) ⇒ <code>array</code>
+        * [._detect()](#module_Gnomalies.Anomaly._detect)
         * [.detect(system, opts)](#module_Gnomalies.Anomaly.detect) ⇒ <code>Promiose.&lt;boolean&gt;</code>
-        * [._detect(system, opts)](#module_Gnomalies.Anomaly._detect) ⇒ <code>Promiose.&lt;boolean&gt;</code>
         * [.serialize(keys)](#module_Gnomalies.Anomaly.serialize) ⇒ <code>string</code>
         * [.from_serialized(str)](#module_Gnomalies.Anomaly.from_serialized) ⇒ <code>Anomaly</code>
 
@@ -192,16 +186,18 @@ constructor
 
 **Throws**:
 
-- <code>Error</code> if state is invalid
+- <code>Error</code> error on invalid parameter
 
 
 | Param | Type | Description |
 | --- | --- | --- |
 | params | <code>object</code> | parameters for this object |
-| params.history | <code>array</code> | the log |
-| params.id | <code>string</code> | the id |
-| params.state | <code>string</code> | the state |
-| params.paused | <code>boolean</code> | whether the anomaly is paused |
+| [params.history] | <code>array</code> | the log |
+| [params.id] | <code>string</code> | the id |
+| [params.state] | <code>string</code> | the state |
+| [params.paused] | <code>boolean</code> | whether the anomaly is paused |
+| [params.dirty] | <code>boolean</code> | whether the anomaly is dirty |
+| [params.fingerprints] | <code>object</code> | the fingerprints |
 
 <a name="module_Gnomalies.Anomaly+fingerprints"></a>
 
@@ -297,26 +293,6 @@ Do not override me. Override _action() instead!
 | system | <code>object</code> | the system being analyzed |
 | opts | <code>object</code> | arbitrary options |
 
-<a name="module_Gnomalies.Anomaly+_action"></a>
-
-##### anomaly.\_action(system, opts) ⇒ <code>Promise</code>
-Action
-
-Perform the action for this anomaly.
-Override me to add specific behavior!
-
-**Kind**: instance method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
-**Returns**: <code>Promise</code> - promise that resolves when the action is complete  
-**Throws**:
-
-- <code>Error</code> error on error
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| system | <code>object</code> | the system being analyzed |
-| opts | <code>object</code> | arbitrary options |
-
 <a name="module_Gnomalies.Anomaly+revert"></a>
 
 ##### anomaly.revert(system, opts) ⇒ <code>Promise</code>
@@ -332,26 +308,6 @@ Do not override me. Override _revert() instead!
 - <code>Error</code> error on error
 
 **Emits**: [<code>activity</code>](#Anomaly+event_activity)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| system | <code>object</code> | the system being analyzed |
-| opts | <code>object</code> | arbitrary options |
-
-<a name="module_Gnomalies.Anomaly+_revert"></a>
-
-##### anomaly.\_revert(system, opts) ⇒ <code>Promise</code>
-Revert
-
-Undo the action for this anomaly.
-Override me to add specific behavior!
-
-**Kind**: instance method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
-**Returns**: <code>Promise</code> - promise that resolves when the reversion is complete  
-**Throws**:
-
-- <code>Error</code> error on error
-
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -375,24 +331,6 @@ Do not override me. Override _evaluate() instead!
 - <code>Error</code> error on error
 
 **Emits**: [<code>activity</code>](#Anomaly+event_activity)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| system | <code>object</code> | the system being analyzed |
-| opts | <code>object</code> | arbitrary options |
-
-<a name="module_Gnomalies.Anomaly+_evaluate"></a>
-
-##### anomaly.\_evaluate(system, opts) ⇒ <code>Promise</code>
-Evaluate
-
-Evaluate the success of our action.
-Throw an error if you believe the action or reversion failed.
-Can also be used for post-action cleanup, statistics, etc.
-Override me to add specific behavior!
-
-**Kind**: instance method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
-**Returns**: <code>Promise</code> - promise that resolves when the evaluation is complete  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -468,31 +406,18 @@ allowed_states (getter)
 
 **Kind**: static property of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
 **Returns**: <code>array</code> - the allowed states  
+<a name="module_Gnomalies.Anomaly._detect"></a>
+
+##### Anomaly.\_detect()
+Placeholder functions - these don't do anything until they are overidden
+Function signature matches that of their non-underscored wrappers
+
+**Kind**: static method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
 <a name="module_Gnomalies.Anomaly.detect"></a>
 
 ##### Anomaly.detect(system, opts) ⇒ <code>Promiose.&lt;boolean&gt;</code>
 Detect an anomaly.
 Don't override me. Override _detect() instead!
-
-**Kind**: static method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
-**Returns**: <code>Promiose.&lt;boolean&gt;</code> - true if an anomaly is detected  
-**Throws**:
-
-- <code>Error</code> error on error
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| system | <code>object</code> | the system being analyzed |
-| opts | <code>object</code> | arbitrary options |
-
-<a name="module_Gnomalies.Anomaly._detect"></a>
-
-##### Anomaly.\_detect(system, opts) ⇒ <code>Promiose.&lt;boolean&gt;</code>
-Detect
-
-Detect an anomaly.
-Override me to add specific behavior!
 
 **Kind**: static method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
 **Returns**: <code>Promiose.&lt;boolean&gt;</code> - true if an anomaly is detected  
