@@ -83,12 +83,12 @@ A few important departures from the original concept (//delete me after everyone
 
 ## Subclassing notes 
 - Most overridden functions are `async`
-- If you implement `revert()`, you are expected to store whatever data you need during `action()` in order to perform the reversion.  You can do this externally, in a database, or you can store the data within your subclass.
+- When you implement `_revert()`, you are expected to store whatever data you need during `_action()` in order to perform the reversion.  Make sure you override `.serialize()` and `.from_serialized()` so that this data gets stored with your class!
+- You should override `fingerprint()` to call the base method with just the keys that should be used in the fingerprint.  Otherwise all keys in `system` will be fingerprinted by default.
 - You may emit Anomaly#activity with your progress, in percent.  `Anomaly` will emit 0 and 100 for you as bookends automatically.
 - Use the built in `Anomaly.log.{debug|info|warn|error}()` methods for logging.  It is accessable via `.history`.  Each call will also emit `Anomaly#log` events, making it easy to connect with your external logging engine.
 
 ## Todo
-- How does one set `fingerprint_keys`?
 - Turn examples into tests
 
 ## Acknowledgements
