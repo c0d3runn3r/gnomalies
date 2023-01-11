@@ -15,7 +15,11 @@ Reversible, controlled anomaly detection and management
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 - [API](#api)
+  * [Modules](#modules)
+  * [Classes](#classes)
   * [Gnomalies](#gnomalies)
+  * [Key](#key)
+  * [KeyExtractor](#keyextractor)
 
 <!-- tocstop -->
 
@@ -103,6 +107,26 @@ Copyright (c) 2022 Nova Dynamics
 
 <!-- api -->
 
+### Modules
+
+<dl>
+<dt><a href="#module_Gnomalies">Gnomalies</a></dt>
+<dd></dd>
+</dl>
+
+### Classes
+
+<dl>
+<dt><a href="#Key">Key</a></dt>
+<dd><p>Key</p>
+<p>A rich representation of a key</p>
+</dd>
+<dt><a href="#KeyExtractor">KeyExtractor</a></dt>
+<dd><p>KeyExtractor</p>
+<p>Extract all keys from an object</p>
+</dd>
+</dl>
+
 <a name="module_Gnomalies"></a>
 
 ### Gnomalies
@@ -122,7 +146,7 @@ Copyright (c) 2022 Nova Dynamics
             * [.action(system, opts)](#module_Gnomalies.Anomaly+action) ⇒ <code>Promise</code>
             * [.revert(system, opts)](#module_Gnomalies.Anomaly+revert) ⇒ <code>Promise</code>
             * [.evaluate(system, opts)](#module_Gnomalies.Anomaly+evaluate) ⇒ <code>Promise</code>
-            * [.fingerprint(system, keys)](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
+            * [.fingerprint(system, [only_keys])](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
             * [.iterations([state])](#module_Gnomalies.Anomaly+iterations) ⇒ <code>number</code>
             * [.pause(reason)](#module_Gnomalies.Anomaly+pause)
             * [.resume(reason)](#module_Gnomalies.Anomaly+resume)
@@ -166,7 +190,7 @@ If your processor will be using fingerprints, you should also make sure .fingerp
         * [.action(system, opts)](#module_Gnomalies.Anomaly+action) ⇒ <code>Promise</code>
         * [.revert(system, opts)](#module_Gnomalies.Anomaly+revert) ⇒ <code>Promise</code>
         * [.evaluate(system, opts)](#module_Gnomalies.Anomaly+evaluate) ⇒ <code>Promise</code>
-        * [.fingerprint(system, keys)](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
+        * [.fingerprint(system, [only_keys])](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
         * [.iterations([state])](#module_Gnomalies.Anomaly+iterations) ⇒ <code>number</code>
         * [.pause(reason)](#module_Gnomalies.Anomaly+pause)
         * [.resume(reason)](#module_Gnomalies.Anomaly+resume)
@@ -328,23 +352,23 @@ Do not override me. Override _evaluate() instead!
 
 <a name="module_Gnomalies.Anomaly+fingerprint"></a>
 
-##### anomaly.fingerprint(system, keys) ⇒ <code>string</code>
+##### anomaly.fingerprint(system, [only_keys]) ⇒ <code>string</code>
 Fingerprint
 
-Fingerprint the system.  Base implementation is to convert specified keys (or all keys) to a string,
+Fingerprint the system.  Base implementation is to convert keys to a string,
 then calculate the SHA256 hash of the string.
 
 **Kind**: instance method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
 **Returns**: <code>string</code> - the fingerprint  
 **Throws**:
 
-- <code>Error</code> error on error
+- <code>Error</code> error if we can't find a specified key
 
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | system | <code>object</code> |  | the system being analyzed |
-| keys | <code>array.&lt;string&gt;</code> | <code></code> | the keys to include in the fingerprint |
+| [only_keys] | <code>array.&lt;string&gt;</code> | <code></code> | only use these keys.  By default, uses all keys that don't point to functions. Use full paths, e.g. ["a.name", "b.name.first"] |
 
 <a name="module_Gnomalies.Anomaly+iterations"></a>
 
@@ -565,5 +589,96 @@ Events are bubbled up. Anomalies that fail between states will be paused and wil
 **Kind**: instance method of [<code>Processor</code>](#module_Gnomalies.Processor)  
 **Returns**: <code>Promise.&lt;(Anomaly\|null)&gt;</code> - the anomaly processed, or null if there are no anomalies to process.  You can check for success by checking the anomaly itself.  
 **Emits**: [<code>log</code>](#Anomaly+event_log), [<code>state</code>](#Anomaly+event_state), [<code>pause</code>](#Anomaly+event_pause), [<code>resume</code>](#Anomaly+event_resume), [<code>activity</code>](#Anomaly+event_activity)  
+<a name="Key"></a>
+
+### Key
+Key
+
+A rich representation of a key
+
+**Kind**: global class  
+
+* [Key](#Key)
+    * [new Key(name, type, [path], [value])](#new_Key_new)
+    * _instance_
+        * [.compare(other)](#Key+compare) ⇒ <code>number</code>
+    * _static_
+        * [.compare(a, b)](#Key.compare) ⇒ <code>number</code>
+
+<a name="new_Key_new"></a>
+
+#### new Key(name, type, [path], [value])
+Constructor
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| name | <code>string</code> |  | the name of the key |
+| type | <code>string</code> |  | the type of thing pointed to by the key |
+| [path] | <code>string</code> | <code>null</code> | the parent path |
+| [value] | <code>any</code> | <code></code> | the value of the key |
+
+<a name="Key+compare"></a>
+
+#### key.compare(other) ⇒ <code>number</code>
+Compare another key to this key
+
+**Kind**: instance method of [<code>Key</code>](#Key)  
+**Returns**: <code>number</code> - -1 if this < other, 0 if this == other, 1 if this > other  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Key</code>](#Key) | the other key |
+
+<a name="Key.compare"></a>
+
+#### Key.compare(a, b) ⇒ <code>number</code>
+Compare two keys (for sorting)
+
+**Kind**: static method of [<code>Key</code>](#Key)  
+**Returns**: <code>number</code> - -1 if a < b, 0 if a == b, 1 if a > b  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| a | [<code>Key</code>](#Key) | the first key |
+| b | [<code>Key</code>](#Key) | the second key |
+
+<a name="KeyExtractor"></a>
+
+### KeyExtractor
+KeyExtractor
+
+Extract all keys from an object
+
+**Kind**: global class  
+
+* [KeyExtractor](#KeyExtractor)
+    * [.extract(obj)](#KeyExtractor.extract) ⇒ [<code>array.&lt;Key&gt;</code>](#Key)
+    * [._type(obj)](#KeyExtractor._type) ⇒ <code>string</code>
+
+<a name="KeyExtractor.extract"></a>
+
+#### KeyExtractor.extract(obj) ⇒ [<code>array.&lt;Key&gt;</code>](#Key)
+Extract all keys from an object
+
+**Kind**: static method of [<code>KeyExtractor</code>](#KeyExtractor)  
+**Returns**: [<code>array.&lt;Key&gt;</code>](#Key) - an array of keys  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| obj | <code>Object</code> | an array, map, set, or object whose paths need extraction |
+
+<a name="KeyExtractor._type"></a>
+
+#### KeyExtractor.\_type(obj) ⇒ <code>string</code>
+Get the actual type of an object
+
+**Kind**: static method of [<code>KeyExtractor</code>](#KeyExtractor)  
+**Returns**: <code>string</code> - the **actual** type of the object: array, object, null, undefined, boolean, number, string, function, date, map, set  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| obj | <code>Object</code> | the object to get the type of |
+
 
 <!-- apistop -->
