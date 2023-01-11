@@ -100,7 +100,7 @@ describe("Anomaly", function()  {
             let a = anomaly.fingerprint(system);
             system.message = "hello there again";
             let b = anomaly.fingerprint(system);
-            assert.notEqual(a, b, "fingerprint should be different");
+            assert.notEqual(a, b, `fingerprint should be different (${a} vs ${b})`);
         });
 
         it("changing a non watched key should not result in a different fingerprint", async function() {
@@ -121,8 +121,8 @@ describe("Anomaly", function()  {
             
             let system = { message: "hello there", score:  32 };
             await anomaly.action(system);
-            assert.equal(anomaly.fingerprints.preaction, "3531ad0cae796eca7981c574fd63bf761781e19afccb3d00e48fe638c16919a3", "preaction fingerprint should be the same each time");
-            assert.equal(anomaly.fingerprints.postaction, "3531ad0cae796eca7981c574fd63bf761781e19afccb3d00e48fe638c16919a3", "postaction fingerprint should be the same as preaction since nothing was changed");
+            assert.equal(anomaly.fingerprints.preaction, "04c115f9840d916b37e6364c18bdbf9f8760b779b16afb83c4add99ae6b5ae12", "preaction fingerprint should be the same each time");
+            assert.equal(anomaly.fingerprints.postaction, "04c115f9840d916b37e6364c18bdbf9f8760b779b16afb83c4add99ae6b5ae12", "postaction fingerprint should be the same as preaction since nothing was changed");
         });
 
         it("should throw an error if the system is not in a preaction state", async function() {
@@ -141,7 +141,7 @@ describe("Anomaly", function()  {
             let system = { message: "hello there", score:  32 };
             await anomaly.action(system);
             system.message = "hello there again";
-            await assert.rejects(anomaly.revert(system), { message: "Unable to revert - current fingerprint 9f6a95948a9e877b7886f4d39240d87037c4de20db296337b6a25a3ed05170a2 does not match postaction fingerprint 3531ad0cae796eca7981c574fd63bf761781e19afccb3d00e48fe638c16919a3" });
+            await assert.rejects(anomaly.revert(system), { message: "Unable to revert - current fingerprint 8382107af85ed8b8eb50cbd8673d79f1c52466965001a2156640d16f2efd532f does not match postaction fingerprint 04c115f9840d916b37e6364c18bdbf9f8760b779b16afb83c4add99ae6b5ae12" });
         });
     });
 

@@ -80,9 +80,6 @@ describe("Key", function() {
             assert.equal(sorted[2].compare(new Key("c", "string")), 0, "Key.compare() should work to sort an array of Keys");
         });
     });
-
-
-
 });
 
 
@@ -228,6 +225,23 @@ describe("KeyExtractor", function() {
                 }
             });
         }
+
+        it("gathers values for each key", function() {
+
+            let o = {
+                a : "a",
+                b : {
+                    c : [
+                        "chocolate"
+                    ]
+                }
+            };
+
+            let extracted = KeyExtractor.extract(o);
+            assert.equal(extracted[0].value, "a", "KeyExtractor.extract() should return the correct value for each key");
+            assert.equal(extracted[1].value, "chocolate", "KeyExtractor.extract() should return the correct value for each key");
+        });
+
 
     });
 
