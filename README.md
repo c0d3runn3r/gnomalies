@@ -146,7 +146,7 @@ Copyright (c) 2022 Nova Dynamics
             * [.action(system, opts)](#module_Gnomalies.Anomaly+action) ⇒ <code>Promise</code>
             * [.revert(system, opts)](#module_Gnomalies.Anomaly+revert) ⇒ <code>Promise</code>
             * [.evaluate(system, opts)](#module_Gnomalies.Anomaly+evaluate) ⇒ <code>Promise</code>
-            * [.fingerprint(system, [only_keys])](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
+            * [.fingerprint(system)](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
             * [.iterations([state])](#module_Gnomalies.Anomaly+iterations) ⇒ <code>number</code>
             * [.pause(reason)](#module_Gnomalies.Anomaly+pause)
             * [.resume(reason)](#module_Gnomalies.Anomaly+resume)
@@ -190,7 +190,7 @@ If your processor will be using fingerprints, you should also make sure .fingerp
         * [.action(system, opts)](#module_Gnomalies.Anomaly+action) ⇒ <code>Promise</code>
         * [.revert(system, opts)](#module_Gnomalies.Anomaly+revert) ⇒ <code>Promise</code>
         * [.evaluate(system, opts)](#module_Gnomalies.Anomaly+evaluate) ⇒ <code>Promise</code>
-        * [.fingerprint(system, [only_keys])](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
+        * [.fingerprint(system)](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
         * [.iterations([state])](#module_Gnomalies.Anomaly+iterations) ⇒ <code>number</code>
         * [.pause(reason)](#module_Gnomalies.Anomaly+pause)
         * [.resume(reason)](#module_Gnomalies.Anomaly+resume)
@@ -211,15 +211,16 @@ constructor
 - <code>Error</code> error on invalid parameter
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | parameters for this object |
-| [params.history] | <code>array</code> | the log |
-| [params.id] | <code>string</code> | the id |
-| [params.state] | <code>string</code> | the state |
-| [params.paused] | <code>boolean</code> | whether the anomaly is paused |
-| [params.dirty] | <code>boolean</code> | whether the anomaly is dirty |
-| [params.fingerprints] | <code>object</code> | the fingerprints |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>object</code> |  | parameters for this object |
+| [params.history] | <code>array</code> |  | the log |
+| [params.id] | <code>string</code> |  | the id |
+| [params.state] | <code>string</code> |  | the state |
+| [params.paused] | <code>boolean</code> |  | whether the anomaly is paused |
+| [params.dirty] | <code>boolean</code> |  | whether the anomaly is dirty |
+| [params.fingerprint_keys] | <code>array</code> | <code></code> | the keys that will be used to generate fingerprints, or null for all keys.  Expects full paths into the systems to be analyzed, e.g. ["a.name", "b.name.first"] |
+| [params.fingerprints] | <code>object</code> |  | the fingerprints |
 
 <a name="module_Gnomalies.Anomaly+fingerprints"></a>
 
@@ -352,23 +353,22 @@ Do not override me. Override _evaluate() instead!
 
 <a name="module_Gnomalies.Anomaly+fingerprint"></a>
 
-##### anomaly.fingerprint(system, [only_keys]) ⇒ <code>string</code>
+##### anomaly.fingerprint(system) ⇒ <code>string</code>
 Fingerprint
 
-Fingerprint the system.  Base implementation is to convert keys to a string,
-then calculate the SHA256 hash of the string.
+Creates a SHA256 hash of the system's keys and values, using the set of keys that were specified in our constructor.
+Skips keys that point to functions.
 
 **Kind**: instance method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
-**Returns**: <code>string</code> - the fingerprint  
+**Returns**: <code>string</code> - the fingerprint as a hex string  
 **Throws**:
 
 - <code>Error</code> error if we can't find a specified key
 
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| system | <code>object</code> |  | the system being analyzed |
-| [only_keys] | <code>array.&lt;string&gt;</code> | <code></code> | only use these keys.  By default, uses all keys that don't point to functions. Use full paths, e.g. ["a.name", "b.name.first"] |
+| Param | Type | Description |
+| --- | --- | --- |
+| system | <code>object</code> | the system being analyzed |
 
 <a name="module_Gnomalies.Anomaly+iterations"></a>
 

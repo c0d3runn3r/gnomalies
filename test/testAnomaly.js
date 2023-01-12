@@ -106,9 +106,10 @@ describe("Anomaly", function()  {
         it("changing a non watched key should not result in a different fingerprint", async function() {
                 
                 let system = { message: "hello there", score:  32 };
-                let a = anomaly.fingerprint(system, ["message"]);
+                let my_anomaly = new Anomaly({fingerprint_keys: ["message"]});
+                let a = my_anomaly.fingerprint(system);
                 system.score = 33;
-                let b = anomaly.fingerprint(system, ["message"]);
+                let b = my_anomaly.fingerprint(system);
                 assert.equal(a, b, "fingerprint should be the same");
         });
 
