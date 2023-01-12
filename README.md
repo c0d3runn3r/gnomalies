@@ -119,7 +119,7 @@ Copyright (c) 2022 Nova Dynamics
 <dl>
 <dt><a href="#Key">Key</a></dt>
 <dd><p>Key</p>
-<p>A rich representation of a key</p>
+<p>A rich representation of a key extracted from an object</p>
 </dd>
 <dt><a href="#KeyExtractor">KeyExtractor</a></dt>
 <dd><p>KeyExtractor</p>
@@ -594,13 +594,18 @@ Events are bubbled up. Anomalies that fail between states will be paused and wil
 ### Key
 Key
 
-A rich representation of a key
+A rich representation of a key extracted from an object
 
 **Kind**: global class  
 
 * [Key](#Key)
     * [new Key(name, type, [path], [value])](#new_Key_new)
     * _instance_
+        * [.fullname](#Key+fullname) ⇒ <code>string</code>
+        * [.name](#Key+name) ⇒ <code>string</code>
+        * [.type](#Key+type) ⇒ <code>string</code>
+        * [.path](#Key+path) ⇒ <code>string</code>
+        * [.value](#Key+value) ⇒ <code>any</code>
         * [.compare(other)](#Key+compare) ⇒ <code>number</code>
     * _static_
         * [.compare(a, b)](#Key.compare) ⇒ <code>number</code>
@@ -618,6 +623,41 @@ Constructor
 | [path] | <code>string</code> | <code>null</code> | the parent path |
 | [value] | <code>any</code> | <code></code> | the value of the key |
 
+<a name="Key+fullname"></a>
+
+#### key.fullname ⇒ <code>string</code>
+Get the full name (path) of the key, e.g. "a.b.0.name"
+
+**Kind**: instance property of [<code>Key</code>](#Key)  
+**Returns**: <code>string</code> - the full name of the key  
+<a name="Key+name"></a>
+
+#### key.name ⇒ <code>string</code>
+Get the name of the key, e.g. "name"
+
+**Kind**: instance property of [<code>Key</code>](#Key)  
+**Returns**: <code>string</code> - the name of the key  
+<a name="Key+type"></a>
+
+#### key.type ⇒ <code>string</code>
+Get the type of the key, e.g. "string"
+
+**Kind**: instance property of [<code>Key</code>](#Key)  
+**Returns**: <code>string</code> - the type of the key  
+<a name="Key+path"></a>
+
+#### key.path ⇒ <code>string</code>
+Get the path of the key, but not its own name: e.g. "a.b.0"
+
+**Kind**: instance property of [<code>Key</code>](#Key)  
+**Returns**: <code>string</code> - the path of the key  
+<a name="Key+value"></a>
+
+#### key.value ⇒ <code>any</code>
+Get the value pointed at by the key (if any) in the original object
+
+**Kind**: instance property of [<code>Key</code>](#Key)  
+**Returns**: <code>any</code> - the value of the key  
 <a name="Key+compare"></a>
 
 #### key.compare(other) ⇒ <code>number</code>
@@ -633,7 +673,8 @@ Compare another key to this key
 <a name="Key.compare"></a>
 
 #### Key.compare(a, b) ⇒ <code>number</code>
-Compare two keys (for sorting)
+Compare two keys (for sorting).  This is just a string comparison of `.fullname`.
+Future work could be to make this sort number-like array elements numerically, e.g. "a.b.2" should be before "a.b.10"
 
 **Kind**: static method of [<code>Key</code>](#Key)  
 **Returns**: <code>number</code> - -1 if a < b, 0 if a == b, 1 if a > b  
@@ -651,15 +692,14 @@ KeyExtractor
 Extract all keys from an object
 
 **Kind**: global class  
-
-* [KeyExtractor](#KeyExtractor)
-    * [.extract(obj)](#KeyExtractor.extract) ⇒ [<code>array.&lt;Key&gt;</code>](#Key)
-    * [._type(obj)](#KeyExtractor._type) ⇒ <code>string</code>
-
 <a name="KeyExtractor.extract"></a>
 
 #### KeyExtractor.extract(obj) ⇒ [<code>array.&lt;Key&gt;</code>](#Key)
 Extract all keys from an object
+
+This function extracts a set of deep keys (like "a.b.0.name") from a nested collection of objects, arrays, Maps and Sets.  
+Map and Set are converted to Object and Array, respectively, before processing.  This results in map keys being stringified.  
+In other words, the keys "0" and 0 are not distinguishable in the result of this function.
 
 **Kind**: static method of [<code>KeyExtractor</code>](#KeyExtractor)  
 **Returns**: [<code>array.&lt;Key&gt;</code>](#Key) - an array of keys  
@@ -667,18 +707,6 @@ Extract all keys from an object
 | Param | Type | Description |
 | --- | --- | --- |
 | obj | <code>Object</code> | an array, map, set, or object whose paths need extraction |
-
-<a name="KeyExtractor._type"></a>
-
-#### KeyExtractor.\_type(obj) ⇒ <code>string</code>
-Get the actual type of an object
-
-**Kind**: static method of [<code>KeyExtractor</code>](#KeyExtractor)  
-**Returns**: <code>string</code> - the **actual** type of the object: array, object, null, undefined, boolean, number, string, function, date, map, set  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| obj | <code>Object</code> | the object to get the type of |
 
 
 <!-- apistop -->
