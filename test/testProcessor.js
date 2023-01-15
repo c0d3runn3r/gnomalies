@@ -97,7 +97,36 @@ describe("Processor", function() {
             
             assert.equal(processor.anomalies[0].paused, true, "anomaly was paused due to throw in _action()");
             assert.equal(processor.anomalies[0].dirty, false, "anomaly was clean due to proper reversion");
+        });
+
     });
+
+    describe("serialize() / deserialize()", function() {
+
+        it("results in identical anomalies", async function() {
+            
+            class TestAnomaly1 extends Anomaly {}
+            class TestAnomaly2 extends Anomaly {}
+            class TestAnomaly3 extends Anomaly {}
+            TestAnomaly1.detect = function() { return true; }
+            TestAnomaly2.detect = function() { return true; }
+            TestAnomaly3.detect = function() { return true; }
+
+            
+            const processor = new Processor([TestAnomaly1, TestAnomaly2, TestAnomaly3]);
+            await processor.detect({ "test": "test" });
+            assert.equal(processor.anomalies.length, 3, "processor should have three anomalies before serialization");
+
+            const serialized = processor.serialize();
+            const deserialized = new Processor([TestAnomaly1, TestAnomaly2, TestAnomaly3]);
+            deserialized.deserialize(serialized);
+
+            assert.equal(deserialized.anomalies.length, 3, "deserialized processor should have three anomalies");
+            assert.deepEqual(processor.anomalies, deserialized.anomalies, "deserialized processor should have the same anomalies");
+            assert(deserialized.anomalies[0] instanceof TestAnomaly1, "deserialized anomalies should be the same type");
+            assert(deserialized.anomalies[1] instanceof TestAnomaly2, "deserialized anomalies should be the same type");
+            assert(deserialized.anomalies[2] instanceof TestAnomaly3, "deserialized anomalies should be the same type");
+        });
 
     });
 

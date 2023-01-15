@@ -136,6 +136,7 @@ Copyright (c) 2022 Nova Dynamics
         * [new Anomaly(params)](#new_module_Gnomalies.Anomaly_new)
         * _instance_
             * [.fingerprints](#module_Gnomalies.Anomaly+fingerprints) ⇒ <code>object</code> \| <code>string</code> \| <code>string</code>
+            * [.fingerprint_keys](#module_Gnomalies.Anomaly+fingerprint_keys) ⇒ <code>array.&lt;string&gt;</code>
             * [.dirty](#module_Gnomalies.Anomaly+dirty) ⇒ <code>boolean</code>
             * [.dirty](#module_Gnomalies.Anomaly+dirty)
             * [.name](#module_Gnomalies.Anomaly+name) ⇒ <code>string</code>
@@ -146,6 +147,7 @@ Copyright (c) 2022 Nova Dynamics
             * [.action(system, opts)](#module_Gnomalies.Anomaly+action) ⇒ <code>Promise</code>
             * [.revert(system, opts)](#module_Gnomalies.Anomaly+revert) ⇒ <code>Promise</code>
             * [.evaluate(system, opts)](#module_Gnomalies.Anomaly+evaluate) ⇒ <code>Promise</code>
+            * [.serialize(keys)](#module_Gnomalies.Anomaly+serialize) ⇒ <code>string</code>
             * [.fingerprint(system)](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
             * [.iterations([state])](#module_Gnomalies.Anomaly+iterations) ⇒ <code>number</code>
             * [.pause(reason)](#module_Gnomalies.Anomaly+pause)
@@ -154,12 +156,12 @@ Copyright (c) 2022 Nova Dynamics
             * [.allowed_states](#module_Gnomalies.Anomaly.allowed_states) ⇒ <code>array</code>
             * [._detect()](#module_Gnomalies.Anomaly._detect)
             * [.detect(system, opts)](#module_Gnomalies.Anomaly.detect) ⇒ <code>Promiose.&lt;boolean&gt;</code>
-            * [.serialize(keys)](#module_Gnomalies.Anomaly.serialize) ⇒ <code>string</code>
-            * [.from_serialized(str)](#module_Gnomalies.Anomaly.from_serialized) ⇒ <code>Anomaly</code>
     * [.Processor](#module_Gnomalies.Processor)
         * [new Processor([classes])](#new_module_Gnomalies.Processor_new)
         * [.anomalies](#module_Gnomalies.Processor+anomalies) ⇒ <code>Array.&lt;Anomaly&gt;</code>
         * [.classes](#module_Gnomalies.Processor+classes) ⇒ <code>Array.&lt;Anomaly&gt;</code>
+        * [.serialize()](#module_Gnomalies.Processor+serialize) ⇒ <code>string</code>
+        * [.deserialize(data)](#module_Gnomalies.Processor+deserialize) ⇒ <code>Processor</code>
         * [.anomalies_with_state(state)](#module_Gnomalies.Processor+anomalies_with_state) ⇒ <code>Array.&lt;Anomaly&gt;</code>
         * [.detect(system, opts)](#module_Gnomalies.Processor+detect)
         * [.process(system, opts)](#module_Gnomalies.Processor+process) ⇒ <code>Promise</code>
@@ -180,6 +182,7 @@ If your processor will be using fingerprints, you should also make sure .fingerp
     * [new Anomaly(params)](#new_module_Gnomalies.Anomaly_new)
     * _instance_
         * [.fingerprints](#module_Gnomalies.Anomaly+fingerprints) ⇒ <code>object</code> \| <code>string</code> \| <code>string</code>
+        * [.fingerprint_keys](#module_Gnomalies.Anomaly+fingerprint_keys) ⇒ <code>array.&lt;string&gt;</code>
         * [.dirty](#module_Gnomalies.Anomaly+dirty) ⇒ <code>boolean</code>
         * [.dirty](#module_Gnomalies.Anomaly+dirty)
         * [.name](#module_Gnomalies.Anomaly+name) ⇒ <code>string</code>
@@ -190,6 +193,7 @@ If your processor will be using fingerprints, you should also make sure .fingerp
         * [.action(system, opts)](#module_Gnomalies.Anomaly+action) ⇒ <code>Promise</code>
         * [.revert(system, opts)](#module_Gnomalies.Anomaly+revert) ⇒ <code>Promise</code>
         * [.evaluate(system, opts)](#module_Gnomalies.Anomaly+evaluate) ⇒ <code>Promise</code>
+        * [.serialize(keys)](#module_Gnomalies.Anomaly+serialize) ⇒ <code>string</code>
         * [.fingerprint(system)](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
         * [.iterations([state])](#module_Gnomalies.Anomaly+iterations) ⇒ <code>number</code>
         * [.pause(reason)](#module_Gnomalies.Anomaly+pause)
@@ -198,8 +202,6 @@ If your processor will be using fingerprints, you should also make sure .fingerp
         * [.allowed_states](#module_Gnomalies.Anomaly.allowed_states) ⇒ <code>array</code>
         * [._detect()](#module_Gnomalies.Anomaly._detect)
         * [.detect(system, opts)](#module_Gnomalies.Anomaly.detect) ⇒ <code>Promiose.&lt;boolean&gt;</code>
-        * [.serialize(keys)](#module_Gnomalies.Anomaly.serialize) ⇒ <code>string</code>
-        * [.from_serialized(str)](#module_Gnomalies.Anomaly.from_serialized) ⇒ <code>Anomaly</code>
 
 <a name="new_module_Gnomalies.Anomaly_new"></a>
 
@@ -216,6 +218,7 @@ constructor
 | params | <code>object</code> |  | parameters for this object |
 | [params.history] | <code>array</code> |  | the log |
 | [params.id] | <code>string</code> |  | the id |
+| [params.description] | <code>string</code> |  | a short description of this anomaly type |
 | [params.state] | <code>string</code> |  | the state |
 | [params.paused] | <code>boolean</code> |  | whether the anomaly is paused |
 | [params.dirty] | <code>boolean</code> |  | whether the anomaly is dirty |
@@ -229,6 +232,15 @@ fingerprints (getter)
 
 **Kind**: instance property of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
 **Returns**: <code>object</code> - fingerprints the fingerprints<code>string</code> - fingerprints.preaction the fingerprint before the action<code>string</code> - fingerprints.postaction the fingerprint after the action  
+<a name="module_Gnomalies.Anomaly+fingerprint_keys"></a>
+
+##### anomaly.fingerprint\_keys ⇒ <code>array.&lt;string&gt;</code>
+fingerprint_keys (getter)
+
+This is set in the constructor and can't be changed after instantiation (otherwise fingerprints would stop being reliable)
+
+**Kind**: instance property of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
+**Returns**: <code>array.&lt;string&gt;</code> - the keys that are used to generate fingerprints  
 <a name="module_Gnomalies.Anomaly+dirty"></a>
 
 ##### anomaly.dirty ⇒ <code>boolean</code>
@@ -351,6 +363,27 @@ Do not override me. Override _evaluate() instead!
 | system | <code>object</code> | the system being analyzed |
 | opts | <code>object</code> | arbitrary options |
 
+<a name="module_Gnomalies.Anomaly+serialize"></a>
+
+##### anomaly.serialize(keys) ⇒ <code>string</code>
+Serialize
+
+Serialize this anomaly for storage.  By default, we serialize the following keys: #id, #name, #state, #log, #paused, #dirty, #fingerprint_keys
+The result is consumed by the constructor, which expects a JSON string whose keys represent the properties to restore.
+
+If you override this funciton, you should call super.serialize() and add your own keys to the result.
+
+**Kind**: instance method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
+**Returns**: <code>string</code> - the serialized anomaly  
+**Throws**:
+
+- <code>Error</code> error on error
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| keys | <code>array.&lt;string&gt;</code> | the keys to serialize |
+
 <a name="module_Gnomalies.Anomaly+fingerprint"></a>
 
 ##### anomaly.fingerprint(system) ⇒ <code>string</code>
@@ -444,45 +477,6 @@ Don't override me. Override _detect() instead!
 | system | <code>object</code> | the system being analyzed |
 | opts | <code>object</code> | arbitrary options |
 
-<a name="module_Gnomalies.Anomaly.serialize"></a>
-
-##### Anomaly.serialize(keys) ⇒ <code>string</code>
-Serialize
-
-Serialize this anomaly for storage.  By default, we serialize the following keys: #id, #name, #state, #log, #paused
-The result is consumed by the constructor, which expects a JSON string whose keys represent the properties to restore.
-
-If you override this funciton, you should call super.serialize() and add your own keys to the result.
-
-**Kind**: static method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
-**Returns**: <code>string</code> - the serialized anomaly  
-**Throws**:
-
-- <code>Error</code> error on error
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| keys | <code>array.&lt;string&gt;</code> | the keys to serialize |
-
-<a name="module_Gnomalies.Anomaly.from_serialized"></a>
-
-##### Anomaly.from\_serialized(str) ⇒ <code>Anomaly</code>
-From Serialized
-
-Create an anomaly from a serialized string.  The string is expected to be a JSON string whose keys represent the properties to restore.
-
-**Kind**: static method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
-**Returns**: <code>Anomaly</code> - the anomaly  
-**Throws**:
-
-- <code>Error</code> error on error
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| str | <code>string</code> | the serialized anomaly |
-
 <a name="module_Gnomalies.Processor"></a>
 
 #### Gnomalies.Processor
@@ -496,6 +490,8 @@ Detect and process anomalies in a queue.  Call the constructor with an array of 
     * [new Processor([classes])](#new_module_Gnomalies.Processor_new)
     * [.anomalies](#module_Gnomalies.Processor+anomalies) ⇒ <code>Array.&lt;Anomaly&gt;</code>
     * [.classes](#module_Gnomalies.Processor+classes) ⇒ <code>Array.&lt;Anomaly&gt;</code>
+    * [.serialize()](#module_Gnomalies.Processor+serialize) ⇒ <code>string</code>
+    * [.deserialize(data)](#module_Gnomalies.Processor+deserialize) ⇒ <code>Processor</code>
     * [.anomalies_with_state(state)](#module_Gnomalies.Processor+anomalies_with_state) ⇒ <code>Array.&lt;Anomaly&gt;</code>
     * [.detect(system, opts)](#module_Gnomalies.Processor+detect)
     * [.process(system, opts)](#module_Gnomalies.Processor+process) ⇒ <code>Promise</code>
@@ -530,6 +526,29 @@ Get all classes
 
 **Kind**: instance property of [<code>Processor</code>](#module_Gnomalies.Processor)  
 **Returns**: <code>Array.&lt;Anomaly&gt;</code> - all Anomaly classes  
+<a name="module_Gnomalies.Processor+serialize"></a>
+
+##### processor.serialize() ⇒ <code>string</code>
+Serialize all anomalies
+
+**Kind**: instance method of [<code>Processor</code>](#module_Gnomalies.Processor)  
+**Returns**: <code>string</code> - the serialized anomalies  
+<a name="module_Gnomalies.Processor+deserialize"></a>
+
+##### processor.deserialize(data) ⇒ <code>Processor</code>
+Deserialize anomalies into our .anomalies property
+
+**Kind**: instance method of [<code>Processor</code>](#module_Gnomalies.Processor)  
+**Returns**: <code>Processor</code> - this for chaining  
+**Throws**:
+
+- <code>Error</code> error on error
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>string</code> | The serialized anomalies |
+
 <a name="module_Gnomalies.Processor+anomalies_with_state"></a>
 
 ##### processor.anomalies\_with\_state(state) ⇒ <code>Array.&lt;Anomaly&gt;</code>

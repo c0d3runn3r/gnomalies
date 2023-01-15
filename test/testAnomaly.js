@@ -146,4 +146,72 @@ describe("Anomaly", function()  {
         });
     });
 
+    describe("serialize() / deserialization using the constructor", function() {
+
+        let before, after, json, system;
+        class SomeAnomaly extends Anomaly {}
+
+        this.beforeEach(function(){
+
+            before = new SomeAnomaly({fingerprint_keys: ["message"]});
+            system = { message: "hello there", score:  32 };
+            json = before.serialize();
+            after = new SomeAnomaly(JSON.parse(json));
+        });
+        
+        it("results in a new object of the correct class", async function() {
+
+            assert.notEqual(before, after, "before and after should not be the same object");
+            assert.equal(after.name, "SomeAnomaly", "after should be an instance of SomeAnomaly");
+        });
+
+        it("serialized data contains .name of the class", async function() {
+
+            assert.equal(JSON.parse(json).name, "SomeAnomaly", "before should be an instance of SomeAnomaly");
+        });
+
+        it(".id is unchanged", async function() {
+
+            assert.equal(before.id, after.id, "before and after should have the same id");
+        });
+
+        it(".description is unchanged", async function() {
+
+            assert.equal(before.description, after.description, "before and after should have the same description");
+            assert.equal(before.state, after.state, "before and after should have the same state");
+            assert.equal(before.paused, after.paused, "before and after should have the same paused");
+            assert.equal(before.dirty, after.dirty, "before and after should have the same dirty");
+            assert.deepEqual(before.fingerprint_keys, after.fingerprint_keys, "before and after should have the same fingerprint_keys");
+            assert.deepEqual(before.fingerprints, after.fingerprints, "before and after should have the same fingerprints");
+        });
+
+        it(".state is unchanged", async function() {
+
+            assert.equal(before.state, after.state, "before and after should have the same state");
+        });
+
+        it(".paused is unchanged", async function() {
+
+            assert.equal(before.paused, after.paused, "before and after should have the same paused");
+        });
+
+        it(".dirty is unchanged", async function() {
+
+            assert.equal(before.dirty, after.dirty, "before and after should have the same dirty");
+        });
+
+        it(".fingerprint_keys are unchanged", async function() {
+
+            assert.deepEqual(before.fingerprint_keys, after.fingerprint_keys, "before and after should have the same fingerprint_keys");
+        });
+
+        it(".fingerprints are unchanged", async function() {
+
+            assert.deepEqual(before.fingerprints, after.fingerprints, "before and after should have the same fingerprints");
+        });
+
+
+    });
+
+
 });
