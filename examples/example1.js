@@ -2,13 +2,13 @@ const Gnomalies = require("../index.js");
 
 // This Anomaly "fixes" lowercase letters.  Skipping normal class syntax for brevity here...
 class EvilLowercase extends Gnomalies.Anomaly {}
-EvilLowercase.detect = async (system, opts) => system.str.match(/[a-z]/)?true:false;
-EvilLowercase.prototype.action = async (system, opts) => system.str = system.str.toUpperCase();
+EvilLowercase._detect = async (system, opts) => system.str.match(/[a-z]/)?true:false;
+EvilLowercase.prototype._action = async (system, opts) => system.str = system.str.toUpperCase();
 
 // This one turns sad faces into happy faces
 class SadFace extends Gnomalies.Anomaly {}
-SadFace.detect = async (system, opts) => system.str.match(/😔/)?true:false;
-SadFace.prototype.action = async (system, opts) => system.str = system.str.replace(/😔/g, "🙂");
+SadFace._detect = async (system, opts) => system.str.match(/😔/)?true:false;
+SadFace.prototype._action = async (system, opts) => system.str = system.str.replace(/😔/g, "🙂");
 
 // Here is a system with things to fix
 let system ={ str: "Hello World 😔" };
