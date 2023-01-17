@@ -146,7 +146,7 @@ describe("Anomaly", function()  {
         });
     });
 
-    describe("serialize() / deserialization using the constructor", function() {
+    describe("toJSON() / deserialization using the constructor", function() {
 
         let before, after, json, system;
         class SomeAnomaly extends Anomaly {}
@@ -155,7 +155,7 @@ describe("Anomaly", function()  {
 
             before = new SomeAnomaly({fingerprint_keys: ["message"]});
             system = { message: "hello there", score:  32 };
-            json = before.serialize();
+            json = JSON.stringify(before.toJSON());
             after = new SomeAnomaly(JSON.parse(json));
         });
         
