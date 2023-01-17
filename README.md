@@ -147,7 +147,8 @@ Copyright (c) 2022 Nova Dynamics
             * [.action(system, opts)](#module_Gnomalies.Anomaly+action) ⇒ <code>Promise</code>
             * [.revert(system, opts)](#module_Gnomalies.Anomaly+revert) ⇒ <code>Promise</code>
             * [.evaluate(system, opts)](#module_Gnomalies.Anomaly+evaluate) ⇒ <code>Promise</code>
-            * [.serialize(keys)](#module_Gnomalies.Anomaly+serialize) ⇒ <code>string</code>
+            * [.toJSON(keys)](#module_Gnomalies.Anomaly+toJSON) ⇒ <code>object</code>
+            * [.snapshot(system)](#module_Gnomalies.Anomaly+snapshot) ⇒ <code>object</code>
             * [.fingerprint(system)](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
             * [.iterations([state])](#module_Gnomalies.Anomaly+iterations) ⇒ <code>number</code>
             * [.pause(reason)](#module_Gnomalies.Anomaly+pause)
@@ -193,7 +194,8 @@ If your processor will be using fingerprints, you should also make sure .fingerp
         * [.action(system, opts)](#module_Gnomalies.Anomaly+action) ⇒ <code>Promise</code>
         * [.revert(system, opts)](#module_Gnomalies.Anomaly+revert) ⇒ <code>Promise</code>
         * [.evaluate(system, opts)](#module_Gnomalies.Anomaly+evaluate) ⇒ <code>Promise</code>
-        * [.serialize(keys)](#module_Gnomalies.Anomaly+serialize) ⇒ <code>string</code>
+        * [.toJSON(keys)](#module_Gnomalies.Anomaly+toJSON) ⇒ <code>object</code>
+        * [.snapshot(system)](#module_Gnomalies.Anomaly+snapshot) ⇒ <code>object</code>
         * [.fingerprint(system)](#module_Gnomalies.Anomaly+fingerprint) ⇒ <code>string</code>
         * [.iterations([state])](#module_Gnomalies.Anomaly+iterations) ⇒ <code>number</code>
         * [.pause(reason)](#module_Gnomalies.Anomaly+pause)
@@ -363,18 +365,17 @@ Do not override me. Override _evaluate() instead!
 | system | <code>object</code> | the system being analyzed |
 | opts | <code>object</code> | arbitrary options |
 
-<a name="module_Gnomalies.Anomaly+serialize"></a>
+<a name="module_Gnomalies.Anomaly+toJSON"></a>
 
-##### anomaly.serialize(keys) ⇒ <code>string</code>
-Serialize
+##### anomaly.toJSON(keys) ⇒ <code>object</code>
+toJSON
 
 Serialize this anomaly for storage.  By default, we serialize the following keys: #id, #name, #state, #log, #paused, #dirty, #fingerprint_keys
-The result is consumed by the constructor, which expects a JSON string whose keys represent the properties to restore.
 
 If you override this funciton, you should call super.serialize() and add your own keys to the result.
 
 **Kind**: instance method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
-**Returns**: <code>string</code> - the serialized anomaly  
+**Returns**: <code>object</code> - the JSON-ized object  
 **Throws**:
 
 - <code>Error</code> error on error
@@ -383,6 +384,20 @@ If you override this funciton, you should call super.serialize() and add your ow
 | Param | Type | Description |
 | --- | --- | --- |
 | keys | <code>array.&lt;string&gt;</code> | the keys to serialize |
+
+<a name="module_Gnomalies.Anomaly+snapshot"></a>
+
+##### anomaly.snapshot(system) ⇒ <code>object</code>
+Snapshot
+
+Take a snapshot of the system suitable for fingerprinting.
+
+**Kind**: instance method of [<code>Anomaly</code>](#module_Gnomalies.Anomaly)  
+**Returns**: <code>object</code> - the snapshot  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| system | <code>object</code> | the system being analyzed |
 
 <a name="module_Gnomalies.Anomaly+fingerprint"></a>
 
