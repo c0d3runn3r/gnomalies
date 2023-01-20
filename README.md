@@ -161,6 +161,7 @@ Copyright (c) 2022 Nova Dynamics
         * [new Processor([classes])](#new_module_Gnomalies.Processor_new)
         * [.anomalies](#module_Gnomalies.Processor+anomalies) ⇒ <code>Array.&lt;Anomaly&gt;</code>
         * [.classes](#module_Gnomalies.Processor+classes) ⇒ <code>Array.&lt;Anomaly&gt;</code>
+        * [.reset()](#module_Gnomalies.Processor+reset) ⇒ <code>Processor</code>
         * [.serialize()](#module_Gnomalies.Processor+serialize) ⇒ <code>string</code>
         * [.deserialize(data)](#module_Gnomalies.Processor+deserialize) ⇒ <code>Processor</code>
         * [.anomalies_with_state(state)](#module_Gnomalies.Processor+anomalies_with_state) ⇒ <code>Array.&lt;Anomaly&gt;</code>
@@ -505,6 +506,7 @@ Detect and process anomalies in a queue.  Call the constructor with an array of 
     * [new Processor([classes])](#new_module_Gnomalies.Processor_new)
     * [.anomalies](#module_Gnomalies.Processor+anomalies) ⇒ <code>Array.&lt;Anomaly&gt;</code>
     * [.classes](#module_Gnomalies.Processor+classes) ⇒ <code>Array.&lt;Anomaly&gt;</code>
+    * [.reset()](#module_Gnomalies.Processor+reset) ⇒ <code>Processor</code>
     * [.serialize()](#module_Gnomalies.Processor+serialize) ⇒ <code>string</code>
     * [.deserialize(data)](#module_Gnomalies.Processor+deserialize) ⇒ <code>Processor</code>
     * [.anomalies_with_state(state)](#module_Gnomalies.Processor+anomalies_with_state) ⇒ <code>Array.&lt;Anomaly&gt;</code>
@@ -541,6 +543,14 @@ Get all classes
 
 **Kind**: instance property of [<code>Processor</code>](#module_Gnomalies.Processor)  
 **Returns**: <code>Array.&lt;Anomaly&gt;</code> - all Anomaly classes  
+<a name="module_Gnomalies.Processor+reset"></a>
+
+##### processor.reset() ⇒ <code>Processor</code>
+Reset the set of anomalies
+
+**Kind**: instance method of [<code>Processor</code>](#module_Gnomalies.Processor)  
+**Returns**: <code>Processor</code> - this for chaining  
+**Emits**: [<code>reset</code>](#Processor+event_reset)  
 <a name="module_Gnomalies.Processor+serialize"></a>
 
 ##### processor.serialize() ⇒ <code>string</code>
