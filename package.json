@@ -1,22 +1,19 @@
 {
-  "name": "anomaly-reports",
+  "name": "gnomalies",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha",
-    "api" : "jsdoc-to-readme --src ./index.js --src ./lib/*.js",
-    "toc" : "markdown-toc -i README.md --maxdepth 3",
-    "doc" : "npm run api && npm run toc"
+    "api": "jsdoc-to-readme --src ./index.js --src ./lib/*.js",
+    "toc": "markdown-toc -i README.md --maxdepth 3",
+    "doc": "npm run api && npm run toc"
   },
-  "author": "",
+  "author": "c0d3runn3r",
   "license": "MIT",
   "devDependencies": {
     "jsdoc-to-readme": "^1.1.0",
     "markdown-toc": "^1.2.0",
     "mocha": "^10.2.0"
-  },
-  "dependencies": {
-    "uuid": "^9.0.0"
   }
 }
