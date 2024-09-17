@@ -1,6 +1,6 @@
 # Gnomalies
 Reversible, controlled anomaly detection and management 
-![The Gnomaly](img/gnome.png)
+![The Gnomaly](https://raw.githubusercontent.com/c0d3runn3r/gnomalies/master/img/gnome.png)
 ## Table of Contents
 
 <!-- toc -->
